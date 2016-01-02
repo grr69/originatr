@@ -14,6 +14,7 @@
     $rootScope.profileId = $localStorage.profileId;
     onSuccessfulLogin = function(response) {
       var redirection_link;
+      console.dir(response);
       redirection_link = _.findWhere(response.responseHeaders, {
         name: "Location"
       }).value;
@@ -93,7 +94,7 @@
       });
     };
     addMessage = function(message) {
-      var fromMe, id;
+      var fromMe, id, timestamp;
       if (parseInt(message.sourceProfileId) === $localStorage.profileId) {
         fromMe = true;
         id = parseInt(message.targetProfileId);
@@ -117,7 +118,8 @@
         if (!$localStorage.conversations[id]) {
           createConversation(id);
         }
-        $localStorage.conversations[id].lastTimeActive = message.timestamp;
+        timestamp = message.timestamp;
+        $localStorage.conversations[id].lastTimeActive = timestamp;
         message = (function() {
           switch (message.type) {
             case 'text':
@@ -139,6 +141,7 @@
           }
         })();
         message.fromMe = fromMe;
+        message.timestamp = timestamp;
         $localStorage.conversations[id].messages.push(message);
         if (!fromMe) {
           $localStorage.conversations[id].unread = true;

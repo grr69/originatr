@@ -39,13 +39,15 @@ chat = ($http, $localStorage, $rootScope, $q, profiles) ->
             if fromMe then profiles.block(id) else profiles.blockedBy(id)
         else
             createConversation(id) unless $localStorage.conversations[id]
-            $localStorage.conversations[id].lastTimeActive = message.timestamp
+            timestamp = message.timestamp
+            $localStorage.conversations[id].lastTimeActive = timestamp
             message = switch message.type
                 when 'text' then {text: message.body}
                 when 'map' then {location: angular.fromJson(message.body)}
                 when 'image' then {image: angular.fromJson(message.body).imageHash}
                 else {text: message.type + ' ' + message.body}
             message.fromMe = fromMe
+            message.timestamp = timestamp
             $localStorage.conversations[id].messages.push(message)
             unless fromMe
                 $localStorage.conversations[id].unread = true

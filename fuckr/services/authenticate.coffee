@@ -18,6 +18,7 @@ authenticateFactory = ($localStorage, $http, $rootScope, $q, $location) ->
     #Solution before Grindr used login captchas: NodeJS HTTP
     #New solution: login form in iFrame intercepting response with chrome.webRequest
     onSuccessfulLogin = (response) ->
+        console.dir(response)
         redirection_link = _.findWhere(response.responseHeaders, name: "Location").value
         $localStorage.authenticationToken = redirection_link.split('authenticationToken=')[1].split('&')[0]
         $rootScope.profileId = $localStorage.profileId = parseInt(redirection_link.split('profileId=')[1])
