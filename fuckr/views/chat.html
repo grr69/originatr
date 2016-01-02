@@ -6,9 +6,7 @@
     </a>
     <div class="lastMessages" ng-click="open(conversation.id)">
       {{lastMessage = conversation.messages[conversation.messages.length - 1]; ""}}
-      <p>{{lastMessage.text || (lastMessage.image ? '***IMAGE***' : '***LOCATION')}}</p>
-      <p ng-if="(lastMessage.text || '').length < 40">
-      {{conversation.messages[conversation.messages.length - 2].text || ''}}
+      <p>{{lastMessage.text.slice(0, 100) || (lastMessage.image ? '***IMAGE***' : '***LOCATION')}}</p>
       </p>
     </div>
   </div>
