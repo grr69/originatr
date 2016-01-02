@@ -56,6 +56,10 @@ html, body, #container {
 .small-input { /* pure-input-1-* behaves weirdly */
     width: 3.5em !important;
 }
+.thumbnail {
+  width: 10vw;
+  height: 10vw;
+}
 
 #profile {
     padding: 0 5px;
@@ -66,7 +70,7 @@ html, body, #container {
     margin-right: auto;
 }
 #profile img {
-    max-width: 70%;
+    max-height: 60vh;
 }
 
 .conversation {
