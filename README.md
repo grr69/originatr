@@ -13,8 +13,9 @@ First, install node-webkit (eg. `npm install -g nodewebkit`). Then
     npm install
     node package.js
 
-##Reverse engineering grindr
-If there's anything you wanna know about Grindr that's not in the code, you can easily analyse the HTTPS part with [mitmproxy](http://mitmproxy.org/)'s [regular proxy](https://mitmproxy.org/doc/modes.html) mode and the XMPP part with... just Wireshark (and [ettercap](http://www.kioptrix.com/blog/ettercap-command-line-basics/) to save time) since grindr XMPP client doesn't bother encrypting!
+##Grindr API
+All interactions with Grindr's API are in [fuckr/services](fuckr/services) and summarized in this [unofficial Grindr API documentation](unofficial-grindr-api-documentation.md).
+If there's anything else you want to know, you can easily analyse the HTTPS part with [mitmproxy](http://mitmproxy.org/)'s [regular proxy](https://mitmproxy.org/doc/modes.html) mode and the XMPP part with just Wireshark (+ Ettercap) since the official grindr client doesn't bother encrypting that part!
 
 ##Tip to Contribute
 Releases history is hosted in gh-pages branch so to fetch code only use
@@ -23,4 +24,4 @@ Releases history is hosted in gh-pages branch so to fetch code only use
 ##Credits
 - Logo: [Reyson Morales](http://reyson-morales.deviantart.com/)
 - Contributions: [Victor Grego](https://github.com/victorgrego)
-- Download Page: [Kyle Power's](https://twitter.com/mfkp/) (copied from [Tinder++](https://github.com/mfkp/tinderplusplus))
+- Download Page: copied from [Tinder++](https://github.com/mfkp/tinderplusplus)

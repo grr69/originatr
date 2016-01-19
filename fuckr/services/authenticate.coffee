@@ -1,6 +1,6 @@
 #Grindr authentication process:
 #   login (only once on a typical phone):
-#       POST https://account.grindr.com/sessions with email and password
+#       POST https://neo-account.grindr.com/sessions with email and password
 #       to get profile id and multiple-uses authentication token
 #   create session (every time):
 #       POST https://primus.grindr.com/2.0/session with multiple-uses authentication token
