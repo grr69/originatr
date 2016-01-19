@@ -12,6 +12,8 @@
                class="small-input" min="18" max="99" size="2" type="number">
         Online
         <input type="checkbox" ng-model="$storage.grindrParams.filter.onlineOnly" ng-click="refresh()">
+        Photo
+        <input type="checkbox" ng-model="$storage.grindrParams.filter.photoOnly" ng-click="refresh()">
       </fieldset>
     </form>
   </div>
@@ -64,7 +66,7 @@
 
     <p ng-show="profile.distance">
       <b> {{profile.distance.toPrecision(3)}} km away</b>
-      <i ng-show="isNearbyProfile && (!pinpointing)" class="icon-globe icon2x" ng-click="pinpoint(profile.profileId)"></i>
+      <i ng-show="isNearbyProfile(profile.profileId) && (!pinpointing)" class="icon-globe icon2x" ng-click="pinpoint(profile.profileId)"></i>
       <img ng-show="pinpointing" src="img/spin.gif">
     </p>
 

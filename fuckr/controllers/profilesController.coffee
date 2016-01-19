@@ -31,10 +31,12 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, p
 
     #right part: detailed profile view
     $scope.open = (id) ->
-        $scope.isNearbyProfile = parseInt($routeParams.id) != id
         profiles.get(id).then (profile) ->
             $scope.profile = profile
     $scope.open(parseInt($routeParams.id)) if $routeParams.id
+
+    $scope.isNearbyProfile = (id) ->
+        _.findWhere($scope.nearbyProfiles, {profileId: id})
 
     $scope.pinpoint = (id) ->
         $scope.pinpointing = true

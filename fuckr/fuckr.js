@@ -514,7 +514,6 @@
       }
     });
     $scope.open = function(id) {
-      $scope.isNearbyProfile = parseInt($routeParams.id) !== id;
       return profiles.get(id).then(function(profile) {
         return $scope.profile = profile;
       });
@@ -522,6 +521,11 @@
     if ($routeParams.id) {
       $scope.open(parseInt($routeParams.id));
     }
+    $scope.isNearbyProfile = function(id) {
+      return _.findWhere($scope.nearbyProfiles, {
+        profileId: id
+      });
+    };
     return $scope.pinpoint = function(id) {
       $scope.pinpointing = true;
       return pinpoint(id).then(function(location) {
