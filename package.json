@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/tomlandia/fuckr",
   "devDependencies": {
-    "nw-builder": "*"
+    "nw-builder": "*",
+    "appdmg": "*",
+    "archiver": "*"
   }
 }
