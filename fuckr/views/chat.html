@@ -27,14 +27,14 @@
     <div ng-repeat-end class="clear"></div>
   </div>
 
-  <form class="pure-form">
+  <form class="pure-form" ng-hide="chatError || offline">
     <fieldset class="pure-group">
       <textarea ng-model="message" class="pure-input-1" rows="5" placeholder=""></textarea>
     </fieldset>
 
-    <button ng-click="sendText()" ng-hide="chatError" type="submit" class="pure-button pure-input-1 pure-button-primary">Send</button>
-    <button ng-click="showSentImages()" ng-hide="chatError" type="submit" class="pure-button pure-input-1 button-secondary">Send Image</button>
-    <button ng-click="sendLocation()" ng-hide="chatError || sentImages" type="submit" class="pure-button pure-input-1">Send Location</button>
+    <button ng-click="sendText()" type="submit" class="pure-button pure-input-1 pure-button-primary">Send</button>
+    <button ng-click="showSentImages()" type="submit" class="pure-button pure-input-1 button-secondary">Send Image</button>
+    <button ng-click="sendLocation()" ng-hide="sentImages" type="submit" class="pure-button pure-input-1">Send Location</button>
     <button ng-click="block()" ng-hide="sentImages" type="submit" class="pure-button pure-input-1 button-error">Block</button>
   </form>
 

@@ -32,13 +32,16 @@ fuckr.config ['$httpProvider', '$routeProvider', ($httpProvider, $routeProvider)
 ]
 
 
-fuckr.run ['$location', '$injector', 'authenticate', ($location, $injector, authenticate) ->
+fuckr.run ['$location', '$injector', '$rootScope', 'authenticate', ($location, $injector, $rootScope, authenticate) ->
     #ugly: loading every factory with 'authenticated' event listener
-    $injector.get(factory) for factory in ['profiles', 'chat', 'updateLocation']
-    authenticate().then(
-        -> $location.path('/profiles/')
-        -> $location.path('/login')
-    )
+    if navigator.onLine
+        $injector.get(factory) for factory in ['profiles', 'chat', 'updateLocation']
+        authenticate().then(
+            -> $location.path('/profiles/')
+            -> $location.path('/login')
+        )
+        window.addEventListener 'offline', -> $rootScope.offline = true
+    else
+        alert('No Internet connection')
+    window.addEventListener 'online', -> window.location.reload('/')
 ]
-
-

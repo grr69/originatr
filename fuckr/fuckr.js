@@ -603,17 +603,27 @@
   ]);
 
   fuckr.run([
-    '$location', '$injector', 'authenticate', function($location, $injector, authenticate) {
+    '$location', '$injector', '$rootScope', 'authenticate', function($location, $injector, $rootScope, authenticate) {
       var factory, k, len, ref;
-      ref = ['profiles', 'chat', 'updateLocation'];
-      for (k = 0, len = ref.length; k < len; k++) {
-        factory = ref[k];
-        $injector.get(factory);
+      if (navigator.onLine) {
+        ref = ['profiles', 'chat', 'updateLocation'];
+        for (k = 0, len = ref.length; k < len; k++) {
+          factory = ref[k];
+          $injector.get(factory);
+        }
+        authenticate().then(function() {
+          return $location.path('/profiles/');
+        }, function() {
+          return $location.path('/login');
+        });
+        window.addEventListener('offline', function() {
+          return $rootScope.offline = true;
+        });
+      } else {
+        alert('No Internet connection');
       }
-      return authenticate().then(function() {
-        return $location.path('/profiles/');
-      }, function() {
-        return $location.path('/login');
+      return window.addEventListener('online', function() {
+        return window.location.reload('/');
       });
     }
   ]);
