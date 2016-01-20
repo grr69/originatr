@@ -61,6 +61,12 @@ html, body, #container {
   height: 10vw;
 }
 
+#map {
+  width: 100%;
+  height: calc(100vh - 14em);
+  letter-spacing: normal;
+}
+
 #profile {
     padding: 0 5px;
     text-align: center;

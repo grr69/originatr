@@ -249,7 +249,7 @@
   angular.module('chat', ['ngStorage', 'profiles']).factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', chat]);
 
   pinpoint = function($q, $localStorage, profiles) {
-    var randomizedLocation, trilaterate;
+    var getNearbyProfiles, randomizedLocation, trilaterate;
     trilaterate = function(beacons) {
       var P1, P2, P3, d, deg, earthR, ex, ey, ez, i, j, rad, ref, triPt, x, y, z;
       earthR = 6371;
@@ -283,31 +283,70 @@
         lon: $localStorage.grindrParams.lon + ((Math.random() - 0.5) / 100)
       };
     };
-    return function(id) {
-      var beacons, deferred, promises;
-      deferred = $q.defer();
-      beacons = [randomizedLocation(), randomizedLocation(), randomizedLocation()];
-      promises = beacons.map(function(location) {
+    getNearbyProfiles = function(locations) {
+      var promises;
+      promises = locations.map(function(location) {
         var params;
         params = _.clone($localStorage.grindrParams);
         params.lat = location.lat;
         params.lon = location.lon;
         return profiles.nearby(params);
       });
-      $q.all(promises).then(function(results) {
-        var i, k, profile;
-        for (i = k = 0; k <= 2; i = ++k) {
-          profile = _.findWhere(results[i], {
-            profileId: id
-          });
-          if (!profile) {
-            return deferred.reject();
+      return $q.all(promises);
+    };
+    return {
+      oneGuy: function(id) {
+        var beacons, deferred;
+        deferred = $q.defer();
+        beacons = [randomizedLocation(), randomizedLocation(), randomizedLocation()];
+        getNearbyProfiles(beacons).then(function(results) {
+          var i, k, profile;
+          for (i = k = 0; k <= 2; i = ++k) {
+            profile = _.findWhere(results[i], {
+              profileId: id
+            });
+            if (!profile) {
+              return deferred.reject();
+            }
+            beacons[i].dist = profile.distance;
           }
-          beacons[i].dist = profile.distance;
-        }
-        return deferred.resolve(trilaterate(beacons));
-      });
-      return deferred.promise;
+          return deferred.resolve(trilaterate(beacons));
+        });
+        return deferred.promise;
+      },
+      everyoneAround: function() {
+        var beacons, deferred;
+        deferred = $q.defer();
+        beacons = [randomizedLocation(), randomizedLocation(), randomizedLocation()];
+        getNearbyProfiles(beacons).then(function(results) {
+          var distances, i, id, idToDistances, idToLocation, k, l, len, m, name1, profile, ref;
+          idToDistances = {};
+          for (i = k = 0; k <= 2; i = ++k) {
+            ref = results[i];
+            for (l = 0, len = ref.length; l < len; l++) {
+              profile = ref[l];
+              if (!profile.distance) {
+                continue;
+              }
+              idToDistances[name1 = profile.profileId] || (idToDistances[name1] = []);
+              idToDistances[profile.profileId].push(profile.distance);
+            }
+          }
+          idToLocation = {};
+          for (id in idToDistances) {
+            distances = idToDistances[id];
+            if (!(distances.length === 3)) {
+              continue;
+            }
+            for (i = m = 0; m <= 2; i = ++m) {
+              beacons[i].dist = distances[i];
+            }
+            idToLocation[id] = trilaterate(beacons);
+          }
+          return deferred.resolve(idToLocation);
+        });
+        return deferred.promise;
+      }
     };
   };
 
@@ -497,12 +536,22 @@
     });
     $scope.$storage.grindrParams.filter.quantity = 500;
     $scope.refresh = function() {
-      return profiles.nearby($scope.$storage.grindrParams).then(function(profiles) {
-        return $scope.nearbyProfiles = profiles;
-      });
+      if ($scope.view === 'thumbnails') {
+        return profiles.nearby($scope.$storage.grindrParams).then(function(profiles) {
+          return $scope.nearbyProfiles = profiles;
+        });
+      } else if ($scope.view === 'map') {
+        return pinpoint.everyoneAround().then(function(locations) {
+          return $scope.locations = locations;
+        });
+      }
     };
-    $scope.refresh();
-    $interval($scope.refresh, 60000);
+    $scope.$watch('view', function(view) {
+      $scope.locations = [];
+      return $scope.refresh();
+    });
+    $scope.view = 'thumbnails';
+    $interval($scope.refresh, 300000);
     autocomplete = new google.maps.places.Autocomplete(document.getElementById('location'));
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
       var place;
@@ -522,6 +571,9 @@
     if ($routeParams.id) {
       $scope.open(parseInt($routeParams.id));
     }
+    $scope.markerClicked = function() {
+      return $scope.open(parseInt(this.id));
+    };
     $scope.isNearbyProfile = function(id) {
       return _.findWhere($scope.nearbyProfiles, {
         profileId: id
@@ -529,7 +581,7 @@
     };
     return $scope.pinpoint = function(id) {
       $scope.pinpointing = true;
-      return pinpoint(id).then(function(location) {
+      return pinpoint.oneGuy(id).then(function(location) {
         var url;
         $scope.pinpointing = false;
         url = "https://maps.google.com/?q=loc:" + location.lat + "," + location.lon;
@@ -551,7 +603,7 @@
     };
   };
 
-  angular.module('profilesController', ['ngtimeago', 'ngRoute', 'ngStorage', 'profiles', 'pinpoint']).directive('highResSrc', highResSrc).controller('profilesController', ['$scope', '$interval', '$localStorage', '$routeParams', '$window', 'profiles', 'pinpoint', profilesController]);
+  angular.module('profilesController', ['ngtimeago', 'ngRoute', 'ngStorage', 'ngMap', 'profiles', 'pinpoint']).directive('highResSrc', highResSrc).controller('profilesController', ['$scope', '$interval', '$localStorage', '$routeParams', '$window', 'profiles', 'pinpoint', profilesController]);
 
   updateProfileController = function($scope, $http, $rootScope, profiles, uploadImage) {
     $scope.profile = {};

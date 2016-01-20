@@ -41,25 +41,44 @@ pinpoint = ($q, $localStorage, profiles) ->
         lat: $localStorage.grindrParams.lat + ((Math.random() - 0.5) / 100) #+/- ~500m north
         lon: $localStorage.grindrParams.lon + ((Math.random() - 0.5) / 100) #+/- ~500m east
 
-
-    return (id) ->
-        deferred = $q.defer()
-
-        beacons = [randomizedLocation(), randomizedLocation(), randomizedLocation()]
-        promises = beacons.map (location) ->
+    getNearbyProfiles = (locations) ->
+        promises = locations.map (location) ->
             params = _.clone($localStorage.grindrParams)
             params.lat = location.lat
             params.lon = location.lon
             profiles.nearby(params)
+        $q.all(promises)
+        
 
-        $q.all(promises).then (results)->
-            for i in [0..2]
-                profile = _.findWhere(results[i], {profileId: id})
-                return deferred.reject() unless profile
-                beacons[i].dist = profile.distance
-            deferred.resolve(trilaterate(beacons))
+    return {
+        oneGuy: (id) ->
+            deferred = $q.defer()
+            beacons = [randomizedLocation(), randomizedLocation(), randomizedLocation()]
+            getNearbyProfiles(beacons).then (results)->
+                for i in [0..2]
+                    profile = _.findWhere(results[i], {profileId: id})
+                    return deferred.reject() unless profile
+                    beacons[i].dist = profile.distance
+                deferred.resolve(trilaterate(beacons))
+            deferred.promise
 
-        deferred.promise
+        everyoneAround: ->
+            deferred = $q.defer()
+            beacons = [randomizedLocation(), randomizedLocation(), randomizedLocation()]
+            getNearbyProfiles(beacons).then (results) ->
+                idToDistances = {}
+                for i in [0..2]
+                    for profile in results[i] when profile.distance
+                        idToDistances[profile.profileId] ||= []
+                        idToDistances[profile.profileId].push(profile.distance)
+
+                idToLocation = {}
+                for id, distances of idToDistances when distances.length == 3
+                    beacons[i].dist = distances[i] for i in [0..2]
+                    idToLocation[id] = trilaterate(beacons)
+                deferred.resolve(idToLocation)
+            deferred.promise
+    }
 
 
 angular

@@ -15,11 +15,18 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, p
     $scope.$storage.grindrParams.filter.quantity = 500
 
     $scope.refresh = ->
-        profiles.nearby($scope.$storage.grindrParams).then (profiles) ->
-            $scope.nearbyProfiles = profiles
+        if $scope.view == 'thumbnails'
+            profiles.nearby($scope.$storage.grindrParams).then (profiles) ->
+                $scope.nearbyProfiles = profiles
+        else if $scope.view == 'map'
+            pinpoint.everyoneAround().then (locations) ->
+                $scope.locations = locations
 
-    $scope.refresh()
-    $interval($scope.refresh, 60000)
+    $scope.$watch 'view', (view) ->
+        $scope.locations = []
+        $scope.refresh()
+    $scope.view = 'thumbnails'
+    $interval($scope.refresh, 300000)
 
     autocomplete = new google.maps.places.Autocomplete(document.getElementById('location'))
     google.maps.event.addListener autocomplete, 'place_changed', ->
@@ -36,12 +43,15 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, p
             $scope.profile = profile
     $scope.open(parseInt($routeParams.id)) if $routeParams.id
 
+    $scope.markerClicked = ->
+        $scope.open(parseInt(this.id))
+
     $scope.isNearbyProfile = (id) ->
         _.findWhere($scope.nearbyProfiles, {profileId: id})
 
     $scope.pinpoint = (id) ->
         $scope.pinpointing = true
-        pinpoint(id).then(
+        pinpoint.oneGuy(id).then(
             (location) ->
                 $scope.pinpointing = false
                 url = "https://maps.google.com/?q=loc:#{location.lat},#{location.lon}"
@@ -58,7 +68,7 @@ highResSrc = ->
   }
 
 angular
-    .module('profilesController', ['ngtimeago', 'ngRoute', 'ngStorage', 'profiles', 'pinpoint'])
+    .module('profilesController', ['ngtimeago', 'ngRoute', 'ngStorage', 'ngMap', 'profiles', 'pinpoint'])
     .directive('highResSrc', highResSrc)
     .controller 'profilesController',
                ['$scope', '$interval', '$localStorage', '$routeParams', '$window', 'profiles', 'pinpoint', profilesController]
