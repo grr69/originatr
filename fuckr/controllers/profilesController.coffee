@@ -11,7 +11,8 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, p
                 photoOnly: true
                 onlineOnly: false
                 page: 1
-                quantity: 300
+                quantity: 500
+    $scope.$storage.grindrParams.filter.quantity = 500
 
     $scope.refresh = ->
         profiles.nearby($scope.$storage.grindrParams).then (profiles) ->
@@ -48,8 +49,16 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, p
             -> $scope.pinpointing = false
         )
 
+highResSrc = ->
+  return {
+    restrict: 'A'
+    link: (scope, element, attrs) ->
+      element.bind 'load', ->
+        angular.element(this).attr("src", attrs.highResSrc)
+  }
 
 angular
     .module('profilesController', ['ngtimeago', 'ngRoute', 'ngStorage', 'profiles', 'pinpoint'])
+    .directive('highResSrc', highResSrc)
     .controller 'profilesController',
                ['$scope', '$interval', '$localStorage', '$routeParams', '$window', 'profiles', 'pinpoint', profilesController]

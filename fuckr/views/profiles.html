@@ -31,7 +31,9 @@
 
 <div class="pure-u-1-2 scroll">
   <div id="profile" ng-show="profile">
-    <img class="pure-img" ng-src="http://cdns.grindr.com/images/profile/1024x1024/{{profile.profileImageMediaHash}}"/>
+    <img class="pure-img"
+         high-res-src="http://cdns.grindr.com/images/profile/1024x1024/{{profile.profileImageMediaHash}}"
+         ng-src="http://cdns.grindr.com/images/thumb/187x187/{{profile.profileImageMediaHash}}"/>
     <h2 id="displayName"}>{{profile.displayName}}</h2>
     <h3 id="headline">{{profile.headline}}</h3>
 

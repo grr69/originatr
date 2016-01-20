@@ -70,7 +70,8 @@ html, body, #container {
     margin-right: auto;
 }
 #profile img {
-    max-height: 60vh;
+    height: 50vh;
+    width: auto;
 }
 
 .conversation {
