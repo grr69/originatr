@@ -38,6 +38,7 @@ function runNwBuilder() {
 
 function runAppDmg() {
   var appdmg = require('appdmg');
+  if(fs.existsSync('releases/Fuckr.dmg')) fs.unlink('releases/Fuckr.dmg');
   var ee = appdmg({
     target: 'releases/Fuckr.dmg',
     basepath: './',
