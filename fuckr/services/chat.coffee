@@ -1,5 +1,3 @@
-jacasr = require('jacasr')
-
 #Grindr chat messages are JSON objects sent and received with XMPP:
 #   addresses: "{profileId}@chat.grindr.com"
 #   password: one-time token (see authentication)
@@ -8,6 +6,8 @@ jacasr = require('jacasr')
 #   - confirm receiption (/confirmChatMessagesDelivered)
 #   - notify Grindr you blocked someone (managed by profiles controller)
 chat = ($http, $localStorage, $rootScope, $q, profiles) ->
+    jacasr = require('jacasr')
+
     s4 = -> Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
     uuid = -> "#{s4()}#{s4()}-#{s4()}-#{s4()}-#{s4()}-#{s4()}#{s4()}#{s4()}".toUpperCase()
 

@@ -27,7 +27,7 @@
     <div ng-repeat-end class="clear"></div>
   </div>
 
-  <form class="pure-form" ng-hide="chatError || offline">
+  <form class="pure-form" ng-hide="chatError || connectionError">
     <fieldset class="pure-group">
       <textarea ng-model="message" class="pure-input-1" rows="5" placeholder=""></textarea>
     </fieldset>
