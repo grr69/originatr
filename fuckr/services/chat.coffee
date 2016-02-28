@@ -59,16 +59,11 @@ chat = ($http, $localStorage, $rootScope, $q, profiles) ->
     acknowledgeMessages = (messageIds) ->
         $http.post('https://primus.grindr.com/2.0/confirmChatMessagesDelivered', {messageIds: messageIds})
     
-
     $rootScope.$on 'authenticated', (event, token) ->
-        try
-          client = new jacasr.Client
-              login: $localStorage.profileId
-              password: token
-              domain: 'chat.grindr.com'
-        catch
-            $rootScope.chatError = true
-            alert("chat error: #{message}. If you're using public wifi, XMPP protocol is probably blocked.")
+        client = new jacasr.Client
+            login: $localStorage.profileId
+            password: token
+            domain: 'chat.grindr.com'
 
         client.on 'ready', ->
             chat.connected = true
@@ -85,6 +80,10 @@ chat = ($http, $localStorage, $rootScope, $q, profiles) ->
             addMessage(message)
             #UGLY: acknowledging XMPP messages with HTTP
             acknowledgeMessages([message.messageId])
+
+        client.on 'end', ->
+            $rootScope.chatError = true
+            alert("XMPP chat error. If you're using public wifi, XMPP protocol is probably blocked.")
 
     sendMessage = (type, body, to, save=true) ->
         message =
