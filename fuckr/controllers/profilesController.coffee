@@ -12,9 +12,14 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, p
                 onlineOnly: false
                 page: 1
                 quantity: 500
-    $scope.$storage.grindrParams.filter.quantity = 500
+    $scope.$storage.grindrParams.filter.quantity = 500 #for upgrades
 
     $scope.refresh = ->
+        #suppress keys if null or empty
+        filter = $scope.$storage.grindrParams.filter
+        delete filter.ageMinimum unless filter.ageMinimum
+        delete filter.ageMaximum unless filter.ageMaximum
+
         if $scope.view == 'thumbnails'
             profiles.nearby($scope.$storage.grindrParams).then (profiles) ->
                 $scope.nearbyProfiles = profiles

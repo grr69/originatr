@@ -532,6 +532,14 @@
     });
     $scope.$storage.grindrParams.filter.quantity = 500;
     $scope.refresh = function() {
+      var filter;
+      filter = $scope.$storage.grindrParams.filter;
+      if (!filter.ageMinimum) {
+        delete filter.ageMinimum;
+      }
+      if (!filter.ageMaximum) {
+        delete filter.ageMaximum;
+      }
       if ($scope.view === 'thumbnails') {
         return profiles.nearby($scope.$storage.grindrParams).then(function(profiles) {
           return $scope.nearbyProfiles = profiles;
