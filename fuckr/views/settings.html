@@ -1,11 +1,21 @@
 <div class="pure-u-1-3"></div>
 
 <div class="pure-u-1-3">
-  <form id="login" class="pure-form pure-form-stacked">
+  <form class="pure-form pure-form-aligned">
     <fieldset>
-      <legend>Update Profile</legend>
+      <label for="stealthyColors">Units</label>
+      <select id="stealthyColors" ng-model='$storage.localUnits'>
+        <option value="US">US</options>
+        <option value="metric" selected>Metric</options>
+      </select>
+    </fieldset>
+  </form>
+
+  <form class="pure-form pure-form-stacked">
+    <fieldset>
+      <legend>Profile</legend>
 	  
-      <label for="headline">Display Name</label>
+      <label for="diaplayName">Display Name</label>
       <input ng-change="updateAttribute('displayName')" ng-model="profile.displayName" class="pure-input-1" id="displayName" type="text" maxlength="15">
 	  
       <label for="headline">Headline</label>

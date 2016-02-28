@@ -67,8 +67,29 @@ highResSrc = ->
         angular.element(this).attr("src", attrs.highResSrc)
   }
 
+gramToLocalUnit = ($localStorage) ->
+    (grams) ->
+        if !grams
+            ''
+        else if $localStorage.localUnits == 'US'
+            "#{(grams / 453.6).toPrecision(3)}lbs"
+        else
+            "#{(grams / 1000.0).toPrecision(3)}kg"
+
+cmToLocalUnit = ($localStorage) ->
+    (cm) ->
+        if !cm
+            ''
+        else if $localStorage.localUnits == 'US'
+            inches = Math.round(cm * 0.3937)
+            "#{Math.floor(inches / 12)}' #{inches % 12}\""
+        else
+            "#{(cm / 100).toPrecision(3)}m"
+
 angular
     .module('profilesController', ['ngtimeago', 'ngRoute', 'ngStorage', 'ngMap', 'profiles', 'pinpoint'])
-    .directive('highResSrc', highResSrc)
+    .directive('highResSrc', [highResSrc])
+    .filter('gramToLocalUnit', ['$localStorage', gramToLocalUnit])
+    .filter('cmToLocalUnit', ['$localStorage', cmToLocalUnit])
     .controller 'profilesController',
                ['$scope', '$interval', '$localStorage', '$routeParams', '$window', 'profiles', 'pinpoint', profilesController]

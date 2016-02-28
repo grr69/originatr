@@ -10,9 +10,6 @@ authenticateFactory = ($localStorage, $http, $rootScope, $q, $location) ->
     uuid = -> "#{s4()}#{s4()}-#{s4()}-#{s4()}-#{s4()}-#{s4()}#{s4()}#{s4()}".toUpperCase()
     $localStorage.deviceAuthentifier = $localStorage.deviceAuthentifier || uuid()
 
-    $rootScope.profileId = $localStorage.profileId
-
-
     #POST https://account.grindr.com/sessions?locale=en returns 302 grindr-account://*
     #so normal browsers don't pass response data to JavaScript
     #Solution before Grindr used login captchas: NodeJS HTTP
@@ -21,7 +18,7 @@ authenticateFactory = ($localStorage, $http, $rootScope, $q, $location) ->
         console.dir(response)
         redirection_link = _.findWhere(response.responseHeaders, name: "Location").value
         $localStorage.authenticationToken = redirection_link.split('authenticationToken=')[1].split('&')[0]
-        $rootScope.profileId = $localStorage.profileId = parseInt(redirection_link.split('profileId=')[1])
+        $localStorage.profileId = parseInt(redirection_link.split('profileId=')[1])
         #This belongs neither to a factory nor to a controller :/
         authenticateFunction().then(
             -> $location.path('/profiles')
@@ -61,7 +58,6 @@ authenticateFactory = ($localStorage, $http, $rootScope, $q, $location) ->
                 resolve()
 
 
-    #Using $rootScope avoids a topBarLogoutButtonController.
     $rootScope.logoutAndRestart = ->
         #bypassing ngStorage to delete key immediately
         localStorage.removeItem('ngStorage-authenticationToken')

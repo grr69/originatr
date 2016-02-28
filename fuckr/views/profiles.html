@@ -69,15 +69,15 @@
       <thead>
         <tr>
           <th>Age</th>
-          <th>Height (m)</th>
-          <th>Weight (kg)</th>
+          <th>Height</th>
+          <th>Weight</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>{{profile.age}}</td>
-          <td>{{profile.height ? (profile.height / 100).toPrecision(3) : ''}}</td>
-          <td>{{profile.weight ? (profile.weight / 1000).toPrecision(3) : ''}}</td>
+          <td>{{profile.height | cmToLocalUnit}}</td>
+          <td>{{profile.weight | gramToLocalUnit}}</td>
         </tr>
       </tbody>
     </table>

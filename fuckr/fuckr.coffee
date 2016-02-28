@@ -15,8 +15,8 @@ if typeof process != 'undefined' and process.versions['node-webkit']
         'authenticate'
         'chat'
         'chatController'
+        'settingsController'
         'updateLocation'
-        'updateProfileController'
     ]
 
 
@@ -33,7 +33,7 @@ if typeof process != 'undefined' and process.versions['node-webkit']
                 
         #login form and controller have been replaced by an iFrame and a webRequest interceptor (see authenticate factory)
         $routeProvider.when('/login', templateUrl: 'views/login.html')
-        for route in ['/profiles/:id?', '/chat/:id?', '/updateProfile']
+        for route in ['/profiles/:id?', '/chat/:id?', '/settings']
             name = route.split('/')[1]
             $routeProvider.when route,
                 templateUrl: "views/#{name}.html"
