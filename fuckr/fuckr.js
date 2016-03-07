@@ -476,7 +476,7 @@
   ]);
 
   chatController = function($scope, $routeParams, chat, uploadImage) {
-    var ENTER, SHIFT, ref, shiftDown;
+    var ENTER, SHIFT, clipboard, ref, shiftDown;
     $scope.lastestConversations = chat.lastestConversations();
     $scope.open = function(id) {
       $scope.conversationId = id;
@@ -537,13 +537,27 @@
         return shiftDown = false;
       }
     };
-    return $scope.onKeyDown = function() {
+    $scope.onKeyDown = function() {
       if (event.which === SHIFT) {
         return shiftDown = true;
       } else if (event.which === ENTER && !shiftDown) {
         $scope.sendText();
         return event.preventDefault();
       }
+    };
+    clipboard = require('nw.gui').Clipboard.get();
+    return $scope.copyToClipboard = function() {
+      var text;
+      text = $scope.conversation.messages.map(function(message) {
+        if (message.text) {
+          return message.text;
+        } else if (message.image) {
+          return "http://cdns.grindr.com/grindr/chat/" + message.image;
+        } else if (message.location) {
+          return "https://maps.google.com/?q=loc:" + message.location.lat + "," + message.location.lon;
+        }
+      }).join('\n\n');
+      return clipboard.set(text);
     };
   };
 

@@ -22,7 +22,7 @@
          <p ng-if="message.text">{{message.text}}</p>
       <a ng-if="message.location" target="_blank"
          ng-href="https://maps.google.com/?q=loc:{{message.location.lat}},{{message.location.lon}}">*LOCATION*</a> 
-      <img class="pure-img" ng-if="message.image" ng-src=http://cdns.grindr.com/grindr/chat/{{message.image}}>
+      <img class="pure-img" ng-if="message.image" ng-src="http://cdns.grindr.com/grindr/chat/{{message.image}}">
     </div>
     <div ng-repeat-end class="clear"></div>
   </div>
@@ -37,6 +37,7 @@
     <button ng-click="showSentImages()" type="submit" class="pure-button pure-input-1 button-secondary">Send Image</button>
     <div ng-hide="sentImages">
       <button ng-click="sendLocation()" type="submit" class="pure-button pure-input-1">Send Location</button>
+      <button ng-click="copyToClipboard()" type="submit" class="pure-button pure-input-1">Copy to Clipboard</button>
       <button ng-click="delete()" type="submit" class="pure-button pure-input-1 button-warning">Delete</button>
       <button ng-click="block()" type="submit" class="pure-button pure-input-1 button-error">Block</button>
     </div>

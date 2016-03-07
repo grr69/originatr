@@ -16,7 +16,6 @@ chatController = ($scope, $routeParams, chat, uploadImage) ->
         chat.sendText($scope.message, $scope.conversationId)
         $scope.message = ''
 
-    
     $scope.showSentImages = ->
         $scope.sentImages = chat.sentImages
     
@@ -53,6 +52,19 @@ chatController = ($scope, $routeParams, chat, uploadImage) ->
         else if event.which is ENTER and not shiftDown
             $scope.sendText()
             event.preventDefault()
+
+    clipboard = require('nw.gui').Clipboard.get()
+    $scope.copyToClipboard = ->
+        text = $scope.conversation.messages
+            .map (message) ->
+                if message.text
+                    message.text
+                else if message.image
+                    "http://cdns.grindr.com/grindr/chat/#{message.image}"
+                else if message.location
+                    "https://maps.google.com/?q=loc:#{message.location.lat},#{message.location.lon}"
+            .join('\n\n')
+        clipboard.set(text)
 
 angular.
     module('chatController', ['ngRoute', 'file-model', 'chat', 'uploadImage']).
