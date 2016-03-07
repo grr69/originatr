@@ -29,13 +29,17 @@
 
   <form class="pure-form" ng-hide="chatError || connectionError">
     <fieldset class="pure-group">
-      <textarea ng-model="message" class="pure-input-1" rows="5" placeholder=""></textarea>
+      <textarea ng-model="message" ng-keydown="onKeyDown($event)" ng-keyup="onKeyUp($event)"
+                class="pure-input-1" rows="5" placeholder=""></textarea>
     </fieldset>
 
     <button ng-click="sendText()" type="submit" class="pure-button pure-input-1 pure-button-primary">Send</button>
     <button ng-click="showSentImages()" type="submit" class="pure-button pure-input-1 button-secondary">Send Image</button>
-    <button ng-click="sendLocation()" ng-hide="sentImages" type="submit" class="pure-button pure-input-1">Send Location</button>
-    <button ng-click="block()" ng-hide="sentImages" type="submit" class="pure-button pure-input-1 button-error">Block</button>
+    <div ng-hide="sentImages">
+      <button ng-click="sendLocation()" type="submit" class="pure-button pure-input-1">Send Location</button>
+      <button ng-click="delete()" type="submit" class="pure-button pure-input-1 button-warning">Delete</button>
+      <button ng-click="block()" type="submit" class="pure-button pure-input-1 button-error">Block</button>
+    </div>
   </form>
 
   <div ng-show="sentImages" class="pure-g">

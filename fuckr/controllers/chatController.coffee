@@ -45,6 +45,15 @@ chatController = ($scope, $routeParams, chat, uploadImage) ->
             $scope.conversationId = null
             $scope.lastestConversations = chat.lastestConversations()
 
+    [shiftDown, SHIFT, ENTER] = [false, 16, 13]
+    $scope.onKeyUp = -> shiftDown = false if event.which is SHIFT
+    $scope.onKeyDown = ->
+        if event.which is SHIFT
+            shiftDown = true
+        else if event.which is ENTER and not shiftDown
+            $scope.sendText()
+            event.preventDefault()
+
 angular.
     module('chatController', ['ngRoute', 'file-model', 'chat', 'uploadImage']).
     controller('chatController', ['$scope', '$routeParams', 'chat', 'uploadImage', chatController])
