@@ -35,7 +35,7 @@ chat = ($http, $localStorage, $rootScope, $q, profiles) ->
         return if profiles.isBlocked(id)
 
         if message.type == 'block'
-            delete $localStorage.conversations[id] if $localStorage.conversations[id]
+            delete $localStorage.conversations[id]
             if fromMe then profiles.block(id) else profiles.blockedBy(id)
         else
             createConversation(id) unless $localStorage.conversations[id]
@@ -119,6 +119,8 @@ chat = ($http, $localStorage, $rootScope, $q, profiles) ->
 
         block: (id) ->
             sendMessage('block', null, id)
+        delete: (id) ->
+            delete $localStorage.conversations[id]
     }
 
 

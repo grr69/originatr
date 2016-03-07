@@ -39,6 +39,11 @@ chatController = ($scope, $routeParams, chat, uploadImage) ->
             $scope.conversationId = null
             $scope.lastestConversations = chat.lastestConversations()
 
+    $scope.delete = ->
+        if confirm('Sure you want to delete this conversation?')
+            chat.delete($scope.conversationId)
+            $scope.conversationId = null
+            $scope.lastestConversations = chat.lastestConversations()
 
 angular.
     module('chatController', ['ngRoute', 'file-model', 'chat', 'uploadImage']).
