@@ -58,15 +58,15 @@ authenticateFactory = ($localStorage, $http, $rootScope, $q, $location) ->
                 resolve()
 
 
+    restart = -> window.location.reload('/')
     $rootScope.logoutAndRestart = ->
         #bypassing ngStorage to delete key immediately
         localStorage.removeItem('ngStorage-authenticationToken')
-        window.location.reload('/')
+        restart()
 
     #primus.grindr.com 401's if the same account is used on two devices at the same time
     #There is no way to prevent 401 login popups on a regular browser (AJAX hooks happen after user's response)
-    chrome.webRequest.onAuthRequired.addListener($rootScope.logoutAndRestart, urls: ["<all_urls>"])
-
+    chrome.webRequest.onAuthRequired.addListener(restart, urls: ["<all_urls>"])
 
     return authenticateFunction
 

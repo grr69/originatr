@@ -3,7 +3,7 @@
   var authenticateFactory, chat, chatController, cmToLocalUnit, fuckr, gramToLocalUnit, gui, highResSrc, managedFields, nativeMenuBar, pinpoint, profiles, profilesController, rememberPassword, settingsController, updateLocation;
 
   authenticateFactory = function($localStorage, $http, $rootScope, $q, $location) {
-    var authenticateFunction, onSuccessfulLogin, s4, uuid;
+    var authenticateFunction, onSuccessfulLogin, restart, s4, uuid;
     s4 = function() {
       return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     };
@@ -58,11 +58,14 @@
         });
       });
     };
-    $rootScope.logoutAndRestart = function() {
-      localStorage.removeItem('ngStorage-authenticationToken');
+    restart = function() {
       return window.location.reload('/');
     };
-    chrome.webRequest.onAuthRequired.addListener($rootScope.logoutAndRestart, {
+    $rootScope.logoutAndRestart = function() {
+      localStorage.removeItem('ngStorage-authenticationToken');
+      return restart();
+    };
+    chrome.webRequest.onAuthRequired.addListener(restart, {
       urls: ["<all_urls>"]
     });
     return authenticateFunction;
