@@ -1,1 +1,1 @@
-coffee -cj fuckr.js services/*.coffee controllers/*.coffee fuckr.coffee
+coffee -cj fuckr.js services/*.coffee controllers/*.coffee fuckr.coffee directives/*.coffee

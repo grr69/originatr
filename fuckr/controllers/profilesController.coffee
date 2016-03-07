@@ -1,4 +1,4 @@
-profilesController = ($scope, $interval, $localStorage, $routeParams, $window, profiles, pinpoint) ->
+profilesController = ($scope, $interval, $localStorage, $routeParams, $window, profiles, pinpoint, managedFields) ->
     #left part: filter form and thumbnails
     $scope.$storage = $localStorage.$default
         location: 'San Francisco, CA'
@@ -91,10 +91,17 @@ cmToLocalUnit = ($localStorage) ->
         else
             "#{(cm / 100).toPrecision(3)}m"
 
+managedFields = ($localStorage, $http) ->
+    self = this
+    $http.get('https://primus.grindr.com/2.0/managedFields').then (response) ->
+        self.fields = response.data.fields
+    
+
 angular
     .module('profilesController', ['ngtimeago', 'ngRoute', 'ngStorage', 'ngMap', 'profiles', 'pinpoint'])
-    .directive('highResSrc', [highResSrc])
+    .directive('highResSrc', highResSrc)
     .filter('gramToLocalUnit', ['$localStorage', gramToLocalUnit])
     .filter('cmToLocalUnit', ['$localStorage', cmToLocalUnit])
+    .service('managedFields', managedFields)
     .controller 'profilesController',
                ['$scope', '$interval', '$localStorage', '$routeParams', '$window', 'profiles', 'pinpoint', profilesController]
