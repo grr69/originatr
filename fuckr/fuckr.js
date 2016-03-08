@@ -248,16 +248,6 @@
 
   angular.module('chat', ['ngStorage', 'profiles']).factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', chat]);
 
-  managedFields = function($http) {
-    var self;
-    self = this;
-    return $http.get('https://primus.grindr.com/2.0/managedFields').then(function(response) {
-      return self.fields = response.data.fields;
-    });
-  };
-
-  angular.module('managedFields', []).service('managedFields', ['$http', managedFields]);
-
   pinpoint = function($q, $localStorage, profiles) {
     var getNearbyProfiles, randomizedLocation, trilaterate;
     trilaterate = function(beacons) {
@@ -494,8 +484,10 @@
       return $scope.lastestConversations = chat.lastestConversations();
     });
     $scope.sendText = function() {
-      chat.sendText($scope.message, $scope.conversationId);
-      return $scope.message = '';
+      if ($scope.message) {
+        chat.sendText($scope.message, $scope.conversationId);
+        return $scope.message = '';
+      }
     };
     $scope.showSentImages = function() {
       return $scope.sentImages = chat.sentImages;
@@ -563,7 +555,7 @@
 
   angular.module('chatController', ['ngRoute', 'file-model', 'chat', 'uploadImage']).controller('chatController', ['$scope', '$routeParams', 'chat', 'uploadImage', chatController]);
 
-  profilesController = function($scope, $interval, $localStorage, $routeParams, $window, profiles, pinpoint, managedFields) {
+  profilesController = function($scope, $interval, $localStorage, $routeParams, $window, $injector, profiles, pinpoint, managedFields) {
     var autocomplete;
     $scope.$storage = $localStorage.$default({
       location: 'San Francisco, CA',
@@ -633,7 +625,7 @@
         profileId: id
       });
     };
-    return $scope.pinpoint = function(id) {
+    $scope.pinpoint = function(id) {
       $scope.pinpointing = true;
       return pinpoint.oneGuy(id).then(function(location) {
         var url;
@@ -643,6 +635,13 @@
       }, function() {
         return $scope.pinpointing = false;
       });
+    };
+    return $scope.block = function() {
+      $injector.get('chat').block($scope.profile.profileId);
+      $scope.nearbyProfiles = $scope.nearbyProfiles.filter(function(profile) {
+        return profile.profileId !== $scope.profile.profileId;
+      });
+      return delete $scope.profile;
     };
   };
 
@@ -691,7 +690,7 @@
     });
   };
 
-  angular.module('profilesController', ['ngtimeago', 'ngRoute', 'ngStorage', 'ngMap', 'profiles', 'pinpoint']).directive('highResSrc', highResSrc).filter('gramToLocalUnit', ['$localStorage', gramToLocalUnit]).filter('cmToLocalUnit', ['$localStorage', cmToLocalUnit]).service('managedFields', managedFields).controller('profilesController', ['$scope', '$interval', '$localStorage', '$routeParams', '$window', 'profiles', 'pinpoint', profilesController]);
+  angular.module('profilesController', ['ngtimeago', 'ngRoute', 'ngStorage', 'ngMap', 'profiles', 'pinpoint']).directive('highResSrc', highResSrc).filter('gramToLocalUnit', ['$localStorage', gramToLocalUnit]).filter('cmToLocalUnit', ['$localStorage', cmToLocalUnit]).service('managedFields', managedFields).controller('profilesController', ['$scope', '$interval', '$localStorage', '$routeParams', '$window', '$injector', 'profiles', 'pinpoint', profilesController]);
 
   settingsController = function($scope, $http, $localStorage, profiles, uploadImage) {
     var base;

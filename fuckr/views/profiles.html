@@ -18,8 +18,8 @@
         <input type="checkbox" ng-model="$storage.grindrParams.filter.photoOnly" ng-change="refresh()">
         View as
         <select ng-model='view' ng-change=refresh()>
-          <option value="thumbnails">Thumbnails</options>
-          <option value="map" selected>Map</options>
+          <option value="thumbnails">Thumbnails</option>
+          <option value="map" selected>Map</option>
         </select>
       </fieldset>
     </form>
@@ -91,6 +91,9 @@
     <p ng-show="authenticated" class="icons">
       <a ng-href="#/chat/{{profile.profileId}}">
         <i class="icon-discussion icon3x"></i>
+      </a>
+      <a ng-click="block()">
+        <i class="icon-cross_mark icon3x"></i>
       </a>
     </p>
   </div>

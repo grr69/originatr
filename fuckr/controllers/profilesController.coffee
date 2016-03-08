@@ -1,4 +1,4 @@
-profilesController = ($scope, $interval, $localStorage, $routeParams, $window, profiles, pinpoint, managedFields) ->
+profilesController = ($scope, $interval, $localStorage, $routeParams, $window, $injector, profiles, pinpoint, managedFields) ->
     #left part: filter form and thumbnails
     $scope.$storage = $localStorage.$default
         location: 'San Francisco, CA'
@@ -64,6 +64,13 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, p
             -> $scope.pinpointing = false
         )
 
+    $scope.block = ->
+        $injector.get('chat').block($scope.profile.profileId)
+        $scope.nearbyProfiles = $scope.nearbyProfiles.filter (profile) ->
+            profile.profileId isnt $scope.profile.profileId
+        delete $scope.profile
+
+
 highResSrc = ->
   return {
     restrict: 'A'
@@ -95,7 +102,7 @@ managedFields = ($localStorage, $http) ->
     self = this
     $http.get('https://primus.grindr.com/2.0/managedFields').then (response) ->
         self.fields = response.data.fields
-    
+
 
 angular
     .module('profilesController', ['ngtimeago', 'ngRoute', 'ngStorage', 'ngMap', 'profiles', 'pinpoint'])
@@ -104,4 +111,4 @@ angular
     .filter('cmToLocalUnit', ['$localStorage', cmToLocalUnit])
     .service('managedFields', managedFields)
     .controller 'profilesController',
-               ['$scope', '$interval', '$localStorage', '$routeParams', '$window', 'profiles', 'pinpoint', profilesController]
+               ['$scope', '$interval', '$localStorage', '$routeParams', '$window', '$injector', 'profiles', 'pinpoint', profilesController]
