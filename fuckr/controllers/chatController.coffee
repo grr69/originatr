@@ -13,8 +13,9 @@ chatController = ($scope, $routeParams, chat, uploadImage) ->
         $scope.lastestConversations = chat.lastestConversations()
 
     $scope.sendText = ->
-        chat.sendText($scope.message, $scope.conversationId)
-        $scope.message = ''
+        if $scope.message
+            chat.sendText($scope.message, $scope.conversationId)
+            $scope.message = ''
 
     $scope.showSentImages = ->
         $scope.sentImages = chat.sentImages
