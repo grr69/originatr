@@ -5,7 +5,7 @@ profiles = ($http, $q, $rootScope) ->
     blocked = []
     $rootScope.$on 'authenticated', ->
         $http.get('https://primus.grindr.com/2.0/blocks').then (response) ->
-            blocked = _.intersection(response.data.blockedBy, response.data.blocking)
+            blocked = _.union(response.data.blockedBy, response.data.blocking)
 
     return {
         nearby: (params) ->
@@ -33,8 +33,9 @@ profiles = ($http, $q, $rootScope) ->
             delete profileCache[id]
 
         block: (id) ->
-            this.blockedBy(id)
-            $http.post('https://primus.grindr.com/2.0/blockProfiles', {targetProfileIds: [id]})
+            self = this
+            $http.post('https://primus.grindr.com/2.0/blockProfiles', {targetProfileIds: [id]}).then ->
+                self.blockedBy(id)
 
         isBlocked: (id) -> _.contains(blocked, id)
     }
