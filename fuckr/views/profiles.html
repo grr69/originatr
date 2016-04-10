@@ -63,7 +63,7 @@
 
     <p ng-show="profile.lookingFor && profile.lookingFor.indexOf(7) != -1" style="color: red">Looking for Right Now</p>
 
-    <p>Last seen: {{profile.seen | timeago}}</p>
+    <p>{{profile.seen | lastTimeActive}}</p>
 
     <table ng-show="profile.height || profile.weight || profile.age" class="pure-table">
       <thead>

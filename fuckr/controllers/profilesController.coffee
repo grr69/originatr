@@ -103,12 +103,23 @@ managedFields = ($localStorage, $http) ->
     $http.get('https://primus.grindr.com/2.0/managedFields').then (response) ->
         self.fields = response.data.fields
 
+lastTimeActive = ->
+    (timestamp) ->
+        minutes = Math.floor((new Date() - timestamp) / 60000)
+        hours = Math.floor(minutes / 24)
+        if minutes <= 5 then "Active Now"
+        else if minutes < 60 then "Active #{minutes} mins ago"
+        else if hours == 1 then "Active 1 hour ago"
+        else if hours < 24 then "Active #{hours} hours ago"
+        else if hours < 48 then "Active yesterday"
+        else "Active #{Math.floor(hours / 24)} days ago"
 
 angular
-    .module('profilesController', ['ngtimeago', 'ngRoute', 'ngStorage', 'ngMap', 'profiles', 'pinpoint'])
+    .module('profilesController', ['ngRoute', 'ngStorage', 'ngMap', 'profiles', 'pinpoint'])
     .directive('highResSrc', highResSrc)
     .filter('gramToLocalUnit', ['$localStorage', gramToLocalUnit])
     .filter('cmToLocalUnit', ['$localStorage', cmToLocalUnit])
+    .filter('lastTimeActive', lastTimeActive)
     .service('managedFields', managedFields)
     .controller 'profilesController',
                ['$scope', '$interval', '$localStorage', '$routeParams', '$window', '$injector', 'profiles', 'pinpoint', profilesController]
