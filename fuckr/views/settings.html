@@ -1,6 +1,6 @@
 <div class="pure-u-1-3"></div>
 
-<div class="pure-u-1-3">
+<div class="pure-u-1-3 scroll">
   <form class="pure-form pure-form-aligned">
     <fieldset>
       <label for="stealthyColors">Units</label>
@@ -44,8 +44,10 @@
       <label for="show-distance" class="pure-checkbox">
         <input ng-change="updateAttribute('showDistance')" ng-model="profile.showDistance" ng-true-value="true" ng-false-value="false" id="show-distance" type="checkbox"> Show distance
       </label>
-	  
-      <legend>New profile image</legend>
+
+
+      <legend>Change profile image</legend>
+      <img class="current-image" ng-src="http://cdns.grindr.com/images/thumb/187x187/{{profile.profileImageMediaHash}}">
       <p>Please upload a square image. If your image isn't a square, the thumbnail will be the biggest square from the upper right-left corner</p>
       <input ng-hide="uploading" type="file" accept="image/jpg,image/jpeg" file-model="imageFile" class="pure-input-1">
       <img ng-show="uploading" src="img/spin.gif">

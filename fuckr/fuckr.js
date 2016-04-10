@@ -358,7 +358,7 @@
     blocked = [];
     $rootScope.$on('authenticated', function() {
       return $http.get('https://primus.grindr.com/2.0/blocks').then(function(response) {
-        return blocked = _.intersection(response.data.blockedBy, response.data.blocking);
+        return blocked = _.union(response.data.blockedBy, response.data.blocking);
       });
     });
     return {
@@ -399,9 +399,12 @@
         return delete profileCache[id];
       },
       block: function(id) {
-        this.blockedBy(id);
+        var self;
+        self = this;
         return $http.post('https://primus.grindr.com/2.0/blockProfiles', {
           targetProfileIds: [id]
+        }).then(function() {
+          return self.blockedBy(id);
         });
       },
       isBlocked: function(id) {
@@ -706,6 +709,13 @@
       data[attribute] = $scope.profile[attribute];
       if (data !== {}) {
         return $http.put('https://primus.grindr.com/2.0/profile', data);
+      }
+    };
+    $scope.deleteProfile = function() {
+      if (confirm("Sure you want to delete your profile")) {
+        return $http["delete"]('https://primus.grindr.com/2.0/profile').then(function() {
+          return $scope.logoutAndRestart();
+        });
       }
     };
     return $scope.$watch('imageFile', function() {

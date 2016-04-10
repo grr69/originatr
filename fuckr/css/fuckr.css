@@ -220,3 +220,8 @@ a:hover .textoverlay{
 	background-color: #000;
 	font-weight: bold;
 }
+
+.current-image {
+  width: 70px;
+  height: 70px;
+}
