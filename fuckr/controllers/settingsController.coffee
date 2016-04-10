@@ -6,7 +6,7 @@ settingsController = ($scope, $http, $localStorage, profiles, uploadImage) ->
     profiles.get($localStorage.profileId).then (profile) ->
         $scope.profile = profile
 
-    $scope.updateProfileAttribute = (attribute) ->
+    $scope.updateAttribute = (attribute) ->
         data = {}
         data[attribute] = $scope.profile[attribute]
         unless data == {}
@@ -25,6 +25,14 @@ settingsController = ($scope, $http, $localStorage, profiles, uploadImage) ->
                 -> alert("Image upload failed")
             ).finally -> $scope.uploading = false
 
+weightInput = ->
+    restrict: 'A'
+    require: 'ngModel'
+    link: (scope, element, attributes, ngModel) ->
+        ngModel.$formatters.push (gramsInput) -> gramsInput / 1000
+        ngModel.$parsers.push (kgInput) -> kgInput * 1000
+
 angular
     .module('settingsController', ['file-model', 'uploadImage'])
     .controller('settingsController', ['$scope', '$http', '$localStorage', 'profiles', 'uploadImage', settingsController])
+    .directive('weightInput', weightInput)
