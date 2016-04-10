@@ -10,6 +10,7 @@ chatController = ($scope, $routeParams, chat, uploadImage) ->
 
     $scope.$on 'new_message', ->
         $scope.conversation = chat.getConversation($scope.conversationId)
+        $scope.conversation.unread = false
         $scope.lastestConversations = chat.lastestConversations()
 
     $scope.sendText = ->
