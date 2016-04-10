@@ -12,6 +12,11 @@ settingsController = ($scope, $http, $localStorage, profiles, uploadImage) ->
         unless data == {}
             $http.put('https://primus.grindr.com/2.0/profile', data)
 
+    $scope.deleteProfile = ->
+        if confirm("Sure you want to delete your profile")
+            $http.delete('https://primus.grindr.com/2.0/profile').then ->
+                $scope.logoutAndRestart()
+
     $scope.$watch 'imageFile', ->
         if $scope.imageFile
             $scope.uploading = true
