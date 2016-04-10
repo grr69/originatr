@@ -1,7 +1,13 @@
+@font-face {
+    font-family: OpenSansEmoji;
+    src: url(font/OpenSansEmoji.ttf) format("opentype");
+}
+
 body {
     background-color: #191818;
     color: white;
 }
+
 a, legend {
     color: white !important;
     text-decoration: none;

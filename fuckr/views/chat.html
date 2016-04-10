@@ -15,7 +15,7 @@
 
 <div ng-show="conversationId" class="pure-u-1-2 scroll">
 
-  <div id="bubbles">
+  <div id="bubbles" emoji>
     <div ng-repeat-start="message in conversation.messages"
          class="{{message.fromMe ? 'from-me' : 'from-them'}}"
          title="{{message.timestamp ? (message.timestamp | date:'medium') : ''}}">
