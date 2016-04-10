@@ -33,19 +33,19 @@
     <div ng-if="runningNodeWebkit" id="icon-bar" class="pure-g">
       <div class="pure-u-1">
         <p class="icons">
-          <a ng-href="#/profiles/">
+          <a non-draggable ng-href="#/profiles/">
             <i class="icon-reorder_square icon2x"></i>
           </a>
-          <a ng-show="authenticated" ng-href="#/chat/">
+          <a non-draggable ng-show="authenticated" ng-href="#/chat/">
             <i class="icon-mail icon2x"></i>
           </a>
-          <a ng-show="authenticated" ng-href="#/settings">
+          <a non-draggable ng-show="authenticated" ng-href="#/settings">
             <i class="icon-settings icon2x"></i>
           </a>
-          <a ng-if="authenticated" ng-click="logoutAndRestart()">
+          <a non-draggable ng-if="authenticated" ng-click="logoutAndRestart()">
             <i class="icon-signout icon2x"></i>
           </a>
-          <a ng-hide="authenticated" ng-href="#/login">
+          <a non-draggable ng-hide="authenticated" ng-href="#/login">
             <i class="icon-signin icon2x"></i>
           </a>
         </p>

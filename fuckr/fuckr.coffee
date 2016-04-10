@@ -11,7 +11,7 @@ if typeof process != 'undefined' and process.versions['node-webkit']
         'ngRoute'
         'profiles'
         'profilesController'
-        'rememberPassword'
+        'fuckr.directives'
         #requires node-webkit
         'authenticate'
         'chat'

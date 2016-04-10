@@ -57,6 +57,7 @@ html, body, #container {
     width: 3.5em !important;
 }
 .thumbnail {
+  cursor: pointer !important;
   width: 10vw;
   height: 10vw;
 }
@@ -212,6 +213,7 @@ html, body, #container {
 	position:absolute;
 	font-size:12px;
 	visibility:hidden;
+  cursor: pointer;
 }
 
 a:hover .textoverlay{

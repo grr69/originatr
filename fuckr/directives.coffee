@@ -13,5 +13,11 @@ rememberPassword = ($localStorage) ->
                 $localStorage.email = emailInput.value
                 $localStorage.password = passwordInput.value
 
-angular.module('rememberPassword', ['ngStorage'])
+nonDraggable = ->
+    restrict: 'A'
+    link: (_, element) ->
+        element.bind 'dragstart', (event) -> event.preventDefault()
+
+angular.module('fuckr.directives', ['ngStorage'])
        .directive('rememberPassword', ['$localStorage', rememberPassword])
+       .directive('nonDraggable', nonDraggable)
