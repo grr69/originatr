@@ -13,7 +13,7 @@
 </div>
 
 
-<div ng-show="conversationId" class="pure-u-1-2 scroll">
+<div ng-show="conversationId" scroll-down-on-new-conversation class="pure-u-1-2 scroll">
 
   <div id="bubbles" emoji>
     <div ng-repeat-start="message in conversation.messages"
@@ -22,14 +22,15 @@
          <p ng-if="message.text">{{message.text}}</p>
       <a ng-if="message.location" target="_blank"
          ng-href="https://maps.google.com/?q=loc:{{message.location.lat}},{{message.location.lon}}">*LOCATION*</a> 
-      <img class="pure-img" ng-if="message.image" ng-src="http://cdns.grindr.com/grindr/chat/{{message.image}}">
+      <img class="pure-img" ng-if="message.image" src="img/bigspin.gif"
+           high-res-src="http://cdns.grindr.com/grindr/chat/{{message.image}}">
     </div>
     <div ng-repeat-end class="clear"></div>
   </div>
 
   <form class="pure-form" ng-hide="chatError || connectionError">
     <fieldset class="pure-group">
-      <textarea ng-model="message" ng-keydown="onKeyDown($event)" ng-keyup="onKeyUp($event)"
+      <textarea ng-model="message" on-enter="sendText()"
                 class="pure-input-1" rows="5" placeholder=""></textarea>
     </fieldset>
 

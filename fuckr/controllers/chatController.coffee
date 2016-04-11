@@ -68,6 +68,29 @@ chatController = ($scope, $routeParams, chat, uploadImage) ->
             .join('\n\n')
         clipboard.set(text)
 
-angular.
-    module('chatController', ['ngRoute', 'file-model', 'chat', 'uploadImage']).
-    controller('chatController', ['$scope', '$routeParams', 'chat', 'uploadImage', chatController])
+onEnter = ($parse) ->
+    restrict: 'A'
+    link: (scope, element, attrs) ->
+        [shiftDown, SHIFT, ENTER] = [false, 16, 13]
+        callback = $parse(attrs.onEnter, null, true)
+        element.bind 'keyup', (event) -> shiftDown = false if event.which is SHIFT
+        element.bind 'keydown', (event) ->
+            if event.which is SHIFT
+                shiftDown = true
+            else if event.which is ENTER and not shiftDown
+                scope.$apply -> callback(scope)
+                event.preventDefault()
+
+scrollDownOnNewConversation = ->
+    restrict: 'A'
+    scope: true
+    link: (scope, element) ->
+        scope.$watch 'conversationId', (value) ->
+            if value
+                setTimeout (-> element[0].scrollTop = 100000), 100
+
+angular
+    .module('chatController', ['ngRoute', 'file-model', 'chat', 'uploadImage'])
+    .controller('chatController', ['$scope', '$routeParams', 'chat', 'uploadImage', chatController])
+    .directive('onEnter', onEnter)
+    .directive('scrollDownOnNewConversation', scrollDownOnNewConversation)

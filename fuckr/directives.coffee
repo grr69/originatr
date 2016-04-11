@@ -25,7 +25,15 @@ emoji = ->
     link: if runningOnMac then _.noop else useOpenSansEmoji
 
 
+highResSrc = ->
+    restrict: 'A'
+    link: (scope, element, attrs) ->
+      element.bind 'load', ->
+        angular.element(this).attr("src", attrs.highResSrc)
+
+
 angular.module('fuckr.directives', ['ngStorage'])
        .directive('rememberPassword', ['$localStorage', rememberPassword])
        .directive('nonDraggable', nonDraggable)
+       .directive('highResSrc', highResSrc)
        .directive('emoji', emoji)

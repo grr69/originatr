@@ -70,15 +70,6 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, $
             profile.profileId isnt $scope.profile.profileId
         delete $scope.profile
 
-
-highResSrc = ->
-  return {
-    restrict: 'A'
-    link: (scope, element, attrs) ->
-      element.bind 'load', ->
-        angular.element(this).attr("src", attrs.highResSrc)
-  }
-
 gramToLocalUnit = ($localStorage) ->
     (grams) ->
         if !grams
@@ -116,7 +107,6 @@ lastTimeActive = ->
 
 angular
     .module('profilesController', ['ngRoute', 'ngStorage', 'ngMap', 'profiles', 'pinpoint'])
-    .directive('highResSrc', highResSrc)
     .filter('gramToLocalUnit', ['$localStorage', gramToLocalUnit])
     .filter('cmToLocalUnit', ['$localStorage', cmToLocalUnit])
     .filter('lastTimeActive', lastTimeActive)
