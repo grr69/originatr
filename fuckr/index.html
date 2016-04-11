@@ -8,7 +8,7 @@
     <title>Fuckr</title>
 
     <link rel="stylesheet" href="css/pure-min.css">
-    <link rel="stylesheet" href="css/mfglabs_iconset.css">
+    <link rel="stylesheet" href="css/font-awesome.css">
     <link rel="stylesheet" href="css/fuckr.css">
 
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
@@ -34,19 +34,19 @@
       <div class="pure-u-1">
         <p class="icons">
           <a non-draggable ng-href="#/profiles/">
-            <i class="icon-reorder_square icon2x"></i>
+            <i class="fa fa-th-large fa-xl"></i>
           </a>
           <a non-draggable ng-show="authenticated" ng-href="#/chat/">
-            <i class="icon-mail icon2x"></i>
+            <i class="fa fa-envelope fa-xl"></i>
           </a>
           <a non-draggable ng-show="authenticated" ng-href="#/settings">
-            <i class="icon-settings icon2x"></i>
+            <i class="fa fa-gear fa-xl"></i>
           </a>
           <a non-draggable ng-if="authenticated" ng-click="logoutAndRestart()">
-            <i class="icon-signout icon2x"></i>
+            <i class="fa fa-sign-out fa-xl"></i>
           </a>
           <a non-draggable ng-hide="authenticated" ng-href="#/login">
-            <i class="icon-signin icon2x"></i>
+            <i class="fa fa-sign-in fa-xl"></i>
           </a>
         </p>
       </div>

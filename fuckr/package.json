@@ -13,6 +13,12 @@
   "webkit": {
     "page-cache": true
   },
+  "scripts": {
+    "build": "coffee -cj fuckr.js services/*.coffee controllers/*.coffee directives.coffee fuckr.coffee"
+  },
+  "devDependencies": {
+    "coffee-script": "*"
+  },
   "chromium-args": "--ignore-certificate-errors --disable-setuid-sandbox",
   "user-agent": "Dalvik/1.6.0 (Linux; U; Android 4.4.2; 7040T Build/KVT49L)",
   "no-edit-menu": false

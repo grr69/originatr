@@ -84,16 +84,16 @@
 
     <p ng-show="profile.distance">
       <b> {{profile.distance.toPrecision(3)}} km away</b>
-      <i ng-show="isNearbyProfile(profile.profileId) && (!pinpointing)" class="icon-globe icon2x" ng-click="pinpoint(profile.profileId)"></i>
+      <i ng-show="isNearbyProfile(profile.profileId) && (!pinpointing)" class="fa fa-globe fa-2x" ng-click="pinpoint(profile.profileId)"></i>
       <img ng-show="pinpointing" src="img/spin.gif">
     </p>
 
     <p ng-show="authenticated" class="icons">
       <a non-draggable ng-href="#/chat/{{profile.profileId}}">
-        <i class="icon-discussion icon3x"></i>
+        <i class="fa fa-comments fa-4x"></i>
       </a>
       <a ng-click="block()">
-        <i class="icon-cross_mark icon3x"></i>
+        <i class="fa fa-ban fa-4x"></i>
       </a>
     </p>
   </div>
