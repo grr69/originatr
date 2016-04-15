@@ -1,4 +1,6 @@
-rememberPassword = ($localStorage) ->
+directives = angular.module('fuckr.directives', ['ngStorage'])
+
+directives.directive 'rememberPassword', ['$localStorage', ($localStorage) ->
     restrict: 'A'
     link: (_, element) ->
         element.bind 'load', ->
@@ -12,28 +14,37 @@ rememberPassword = ($localStorage) ->
             iframeDocument.querySelector('input[name=commit]').addEventListener 'click', ->
                 $localStorage.email = emailInput.value
                 $localStorage.password = passwordInput.value
+]
 
-nonDraggable = ->
+directives.directive 'nonDraggable', ->
     restrict: 'A'
     link: (_, element) ->
         element.bind 'dragstart', (event) -> event.preventDefault()
 
-emoji = ->
+directives.directive 'emoji', ->
     runningOnMac = typeof process isnt 'undefined' and process.platform is 'darwin'
     useOpenSansEmoji = (_, element) -> element.css({'font-family', 'sans-serif, OpenSansEmoji'})
     restrict: 'A'
     link: if runningOnMac then _.noop else useOpenSansEmoji
 
 
-highResSrc = ->
+directives.directive 'highResSrc', ->
     restrict: 'A'
     link: (scope, element, attrs) ->
       element.bind 'load', ->
         angular.element(this).attr("src", attrs.highResSrc)
 
-
-angular.module('fuckr.directives', ['ngStorage'])
-       .directive('rememberPassword', ['$localStorage', rememberPassword])
-       .directive('nonDraggable', nonDraggable)
-       .directive('highResSrc', highResSrc)
-       .directive('emoji', emoji)
+if typeof process != 'undefined' and process.versions['node-webkit']
+    directives.directive 'target', ->
+        gui = require 'nw.gui'
+        window.open = (url, target) ->
+            gui.Shell.openExternal(url) if target is '_blank'
+        restrict: 'A'
+        scope:
+            target: '@'
+            href: '@'
+        link: ($scope, $element) ->
+            if $scope.target is '_blank'
+                $element.bind 'click', (event) ->
+                    event.preventDefault()
+                    gui.Shell.openExternal $scope.href
