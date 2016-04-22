@@ -8,9 +8,9 @@ Install node-webkit >= 0.13 (eg. `npm install -g nodewebkit`) and run `nw fuckr`
 ##Develop
 
     npm install --save-dev
-    npm build
-    npm run
-    npm package
+    npm run build
+    npm run run
+    npm run package
 
 ##Grindr API
 All interactions with Grindr's API are in [fuckr/services](fuckr/services) and summarized in this [unofficial Grindr API documentation](unofficial-grindr-api-documentation.md).
