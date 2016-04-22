@@ -20,7 +20,7 @@ settingsController = ($scope, $http, $localStorage, profiles, uploadImage) ->
     $scope.$watch 'imageFile', ->
         if $scope.imageFile
             $scope.uploading = true
-            uploadImage.uploadProfileImfuckrSettingsage($scope.imageFile).then(
+            uploadImage.uploadProfileImage($scope.imageFile).then(
                 -> alert("Image up for review by some Grindr™ monkey")
                 -> alert("Image upload failed")
             ).finally -> $scope.uploading = false

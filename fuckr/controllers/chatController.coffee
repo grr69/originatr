@@ -46,15 +46,6 @@ chatController = ($scope, $routeParams, chat, uploadImage) ->
             $scope.conversationId = null
             $scope.lastestConversations = chat.lastestConversations()
 
-    [shiftDown, SHIFT, ENTER] = [false, 16, 13]
-    $scope.onKeyUp = -> shiftDown = false if event.which is SHIFT
-    $scope.onKeyDown = ->
-        if event.which is SHIFT
-            shiftDown = true
-        else if event.which is ENTER and not shiftDown
-            $scope.sendText()
-            event.preventDefault()
-
     clipboard = require('nw.gui').Clipboard.get()
     $scope.copyToClipboard = ->
         text = $scope.conversation.messages
@@ -83,7 +74,6 @@ onEnter = ($parse) ->
 
 scrollDownOnNewConversation = ->
     restrict: 'A'
-    scope: true
     link: (scope, element) ->
         scope.$watch 'conversationId', (value) ->
             if value

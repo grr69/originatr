@@ -469,7 +469,7 @@
   ]);
 
   chatController = function($scope, $routeParams, chat, uploadImage) {
-    var ENTER, SHIFT, clipboard, ref, shiftDown;
+    var clipboard;
     $scope.lastestConversations = chat.lastestConversations();
     $scope.open = function(id) {
       $scope.conversationId = id;
@@ -527,20 +527,6 @@
         return $scope.lastestConversations = chat.lastestConversations();
       }
     };
-    ref = [false, 16, 13], shiftDown = ref[0], SHIFT = ref[1], ENTER = ref[2];
-    $scope.onKeyUp = function() {
-      if (event.which === SHIFT) {
-        return shiftDown = false;
-      }
-    };
-    $scope.onKeyDown = function() {
-      if (event.which === SHIFT) {
-        return shiftDown = true;
-      } else if (event.which === ENTER && !shiftDown) {
-        $scope.sendText();
-        return event.preventDefault();
-      }
-    };
     clipboard = require('nw.gui').Clipboard.get();
     return $scope.copyToClipboard = function() {
       var text;
@@ -586,7 +572,6 @@
   scrollDownOnNewConversation = function() {
     return {
       restrict: 'A',
-      scope: true,
       link: function(scope, element) {
         return scope.$watch('conversationId', function(value) {
           if (value) {
@@ -783,7 +768,7 @@
     return $scope.$watch('imageFile', function() {
       if ($scope.imageFile) {
         $scope.uploading = true;
-        return uploadImage.uploadProfileImfuckrSettingsage($scope.imageFile).then(function() {
+        return uploadImage.uploadProfileImage($scope.imageFile).then(function() {
           return alert("Image up for review by some Grindr™ monkey");
         }, function() {
           return alert("Image upload failed");
