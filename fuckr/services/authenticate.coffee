@@ -16,7 +16,7 @@ authenticateFactory = ($localStorage, $http, $rootScope, $q, $location) ->
     #New solution: login form in iFrame intercepting response with chrome.webRequest
     onSuccessfulLogin = (response) ->
         console.dir(response)
-        redirection_link = _.findWhere(response.responseHeaders, name: "Location").value
+        redirection_link = _.findWhere(response.responseHeaders, name: "location").value
         $localStorage.authenticationToken = redirection_link.split('authenticationToken=')[1].split('&')[0]
         $localStorage.profileId = parseInt(redirection_link.split('profileId=')[1])
         #This belongs neither to a factory nor to a controller :/
