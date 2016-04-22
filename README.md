@@ -17,10 +17,6 @@ First, install node-webkit (eg. `npm install -g nodewebkit`). Then
 All interactions with Grindr's API are in [fuckr/services](fuckr/services) and summarized in this [unofficial Grindr API documentation](unofficial-grindr-api-documentation.md).
 If there's anything else you want to know, you can easily analyse the HTTPS part with [mitmproxy](http://mitmproxy.org/)'s [regular proxy](https://mitmproxy.org/doc/modes.html) mode and the XMPP part with just Wireshark (+ Ettercap) since the official grindr client doesn't bother encrypting that part!
 
-##Tip to Contribute
-Releases history is hosted in gh-pages branch so to fetch code only use
-`git clone https://github.com/tomlandia/fuckr.git --branch master --single-branch`
-
 ##Credits
 - Logo: [Reyson Morales](http://reyson-morales.deviantart.com/)
 - Contributions: [Victor Grego](https://github.com/victorgrego)
