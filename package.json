@@ -4,7 +4,9 @@
   "description": "Desktop grindr client for Mac and Windows",
   "main": "package.js",
   "scripts": {
-    "package": "node package.js"
+    "build": "coffee -cj fuckr/fuckr.js fuckr/services/*.coffee fuckr/controllers/*.coffee fuckr/directives.coffee fuckr/fuckr.coffee",
+    "package": "npm run build && node package.js",
+    "run": "npm run build && nw ."
   },
   "repository": {
     "type": "git",
@@ -19,6 +21,8 @@
   "devDependencies": {
     "nw-builder": "git://github.com/evshiron/nw-builder",
     "appdmg": "*",
-    "archiver": "*"
+    "archiver": "*",
+    "nw": "~0.14.2",
+    "coffee-script": "*"
   }
 }

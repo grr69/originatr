@@ -1,17 +1,16 @@
-#[fuckr](http://fuckr.me/): Grindr™ for [Mac](http://fuckr.me/downloads/Fuckr.dmg) and [Windows](http://fuckr.me/downloads/Fuckr.zip)
+#[Fuckr](http://fuckr.me/): Grindr™ for Mac, Windows and Linux
 
-fuckr is a Grindr™ client for desktop built with Node-Webkit, AngularJS and a modified version of [jacasr](https://github.com/tdebarochez/jacasr) (bundled in `fuckr/node_modules`).
+Fuckr is a Grindr™ client for desktop built with Node-Webkit, AngularJS and a modified version of [jacasr](https://github.com/tdebarochez/jacasr) (bundled in `fuckr/node_modules`).
 
 ##Run
-First, install node-webkit (eg. `npm install -g nodewebkit`). Then
+Install node-webkit >= 0.13 (eg. `npm install -g nodewebkit`) and run `nw fuckr`
 
-    cd fuckr/
-    nw .
+##Develop
 
-##Package
-
-    npm install
-    node package.js
+    npm install --save-dev
+    npm build
+    npm run
+    npm package
 
 ##Grindr API
 All interactions with Grindr's API are in [fuckr/services](fuckr/services) and summarized in this [unofficial Grindr API documentation](unofficial-grindr-api-documentation.md).
