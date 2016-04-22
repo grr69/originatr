@@ -27,6 +27,14 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, $
             pinpoint.everyoneAround().then (locations) ->
                 $scope.locations = locations
 
+    $scope.changeFilter = (filterName) ->
+        filterValue = $scope.$storage.filter[filterName]
+        if filterValue
+            $scope.$storage.grindrParams.filter["#{filterName}Ids"] = [filterValue]
+        else
+            delete $scope.$storage.grindrParams.filter["#{filterName}Ids"]
+        $scope.refresh()
+
     $scope.$watch 'view', (view) ->
         $scope.locations = []
         $scope.refresh()
@@ -70,6 +78,8 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, $
             profile.profileId isnt $scope.profile.profileId
         delete $scope.profile
 
+    managedFields.then (response) -> $scope.managedFields = response.data.fields
+
 gramToLocalUnit = ($localStorage) ->
     (grams) ->
         if !grams
@@ -89,10 +99,7 @@ cmToLocalUnit = ($localStorage) ->
         else
             "#{(cm / 100).toPrecision(3)}m"
 
-managedFields = ($localStorage, $http) ->
-    self = this
-    $http.get('https://primus.grindr.com/2.0/managedFields').then (response) ->
-        self.fields = response.data.fields
+managedFields = ($http) -> $http.get('https://primus.grindr.com/2.0/managedFields')
 
 lastTimeActive = ->
     (timestamp) ->
@@ -110,6 +117,6 @@ angular
     .filter('gramToLocalUnit', ['$localStorage', gramToLocalUnit])
     .filter('cmToLocalUnit', ['$localStorage', cmToLocalUnit])
     .filter('lastTimeActive', lastTimeActive)
-    .service('managedFields', managedFields)
+    .factory('managedFields', managedFields)
     .controller 'profilesController',
-               ['$scope', '$interval', '$localStorage', '$routeParams', '$window', '$injector', 'profiles', 'pinpoint', profilesController]
+               ['$scope', '$interval', '$localStorage', '$routeParams', '$window', '$injector', 'profiles', 'pinpoint', 'managedFields', profilesController]

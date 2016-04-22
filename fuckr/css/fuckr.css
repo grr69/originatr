@@ -37,7 +37,7 @@ aside {
 }
 
 iframe {
-    height: 450px !important;
+    height: 500px !important;
     margin-top: 4em;
     border: none;
 }
@@ -58,6 +58,10 @@ html, body, #container {
     font-size: 0.9em;
     letter-spacing: normal;
     text-align: center;
+}
+.pure-form fieldset {
+  padding-top: 1px;
+  padding-bottom: 5px;
 }
 .small-input { /* pure-input-1-* behaves weirdly */
     width: 3.5em !important;
@@ -85,6 +89,10 @@ html, body, #container {
 #profile #profile-pic {
     height: 50vh;
     width: auto;
+}
+
+#managed-fields {
+  font-size: 0.85em;
 }
 
 .conversation {
