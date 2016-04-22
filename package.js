@@ -25,7 +25,7 @@ function runNwBuilder() {
   var nw = new NwBuilder({
     files: 'fuckr/**',
     platforms: PLATFORMS,
-    version: '0.12.1',
+    version: '0.14.2',
     appName: 'Fuckr',
     appVersion: VERSION,
     winIco: /^win/.test(process.platform) ? 'icons/win.ico' : null,
@@ -58,6 +58,7 @@ function runAppDmg() {
 }
 
 runNwBuilder().then(function() {
+  if(!fs.existsSync('releases')) fs.mkdirSync('releases');
   PLATFORMS.forEach(function(platform) {
     directoryToZipFile('build/Fuckr/' + platform, 'releases/Fuckr-' + platform + '.zip')
   });
