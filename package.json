@@ -1,6 +1,6 @@
 {
   "name": "fuckr",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Desktop grindr client for Mac and Windows",
   "main": "package.js",
   "scripts": {
