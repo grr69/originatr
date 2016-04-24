@@ -4,7 +4,7 @@
   "description": "Desktop grindr client for Mac and Windows",
   "main": "package.js",
   "scripts": {
-    "build": "coffee -cj fuckr/fuckr.js fuckr/services/*.coffee fuckr/controllers/*.coffee fuckr/directives.coffee fuckr/fuckr.coffee",
+    "build": "cat fuckr/services/*.coffee fuckr/controllers/*.coffee fuckr/directives.coffee fuckr/fuckr.coffee | coffee -cbs > fuckr/fuckr.js",
     "package": "npm run build && node package.js",
     "run": "npm run build && nw ."
   },
