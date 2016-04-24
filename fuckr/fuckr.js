@@ -182,7 +182,7 @@
         addMessage(message);
         return acknowledgeMessages([message.messageId]);
       });
-      return client.on('end', function() {
+      return client.on('close', function() {
         $rootScope.chatError = true;
         return alert("XMPP chat error. If you're using public wifi, XMPP protocol is probably blocked.");
       });

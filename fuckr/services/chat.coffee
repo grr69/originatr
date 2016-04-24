@@ -81,7 +81,7 @@ chat = ($http, $localStorage, $rootScope, $q, profiles) ->
             #UGLY: acknowledging XMPP messages with HTTP
             acknowledgeMessages([message.messageId])
 
-        client.on 'end', ->
+        client.on 'close', ->
             $rootScope.chatError = true
             alert("XMPP chat error. If you're using public wifi, XMPP protocol is probably blocked.")
 
