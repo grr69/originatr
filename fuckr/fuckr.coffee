@@ -1,4 +1,11 @@
 if typeof process != 'undefined' and process.versions['node-webkit']
+    #copy-paste/emoji for nw 0.12 on Mac
+    if process.versions['node-webkit'] < '0.13' and process.platform == 'darwin'
+        gui = require('nw.gui')
+        nativeMenuBar = new gui.Menu({ type: "menubar" })
+        nativeMenuBar.createMacBuiltin "Fuckr"
+        gui.Window.get().menu = nativeMenuBar
+ 
     fuckr = angular.module 'fuckr', [
         #works on any browser with SOP disabled
         'ngRoute'
@@ -12,7 +19,6 @@ if typeof process != 'undefined' and process.versions['node-webkit']
         'settingsController'
         'updateLocation'
     ]
-
 
     fuckr.config ['$httpProvider', '$routeProvider', '$compileProvider', ($httpProvider, $routeProvider, $compileProvider) ->
         $httpProvider.defaults.headers.common.Accept = '*/*' #avoids 406 error
@@ -33,8 +39,9 @@ if typeof process != 'undefined' and process.versions['node-webkit']
                 templateUrl: "views/#{name}.html"
                 controller: "#{name}Controller"
 
-        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/)
-        $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/)
+        #whitelist chrome-extension:// href/src for nw 0.13+
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|file|mailto|chrome-extension):/)
+        $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|file|mailto|chrome-extension):/)
     ]
 
 
