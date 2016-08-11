@@ -199,7 +199,7 @@ chat = function($http, $localStorage, $rootScope, $q, profiles) {
       sourceProfileId: String($localStorage.profileId),
       body: body
     };
-    client.push(to + "@chat.grindr.com", angular.toJson(message));
+    client.write("<message from='" + $localStorage.profileId + "@chat.grindr.com/jacasr' to='" + to + "@chat.grindr.com' xml:lang='' type='chat' id='" + message.messageId + "'><body>" + (_.escape(angular.toJson(message))) + "</body><markable xmlns='urn:xmpp:chat-markers:0'/></message>");
     if (save) {
       return addMessage(message);
     }
