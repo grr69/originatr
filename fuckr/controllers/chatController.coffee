@@ -21,6 +21,10 @@ chatController = ($scope, $routeParams, chat, uploadImage) ->
 
     $scope.showSentImages = ->
         $scope.sentImages = chat.sentImages
+
+    $scope.clearSentImages = ->
+        if window.confirm("Sure you want to delete all saved images?")
+            chat.sentImages.splice(0, chat.sentImages.length)
     
     $scope.$watch 'imageFile', ->
         if $scope.imageFile

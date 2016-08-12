@@ -504,6 +504,11 @@ chatController = function($scope, $routeParams, chat, uploadImage) {
   $scope.showSentImages = function() {
     return $scope.sentImages = chat.sentImages;
   };
+  $scope.clearSentImages = function() {
+    if (window.confirm("Sure you want to delete all saved images?")) {
+      return chat.sentImages.splice(0, chat.sentImages.length);
+    }
+  };
   $scope.$watch('imageFile', function() {
     if ($scope.imageFile) {
       $scope.uploading = true;
