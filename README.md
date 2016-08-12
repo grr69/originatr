@@ -3,7 +3,7 @@
 Fuckr is a Grindr™ client for desktop built with Node-Webkit, AngularJS and a modified version of [jacasr](https://github.com/tdebarochez/jacasr) (bundled in `fuckr/node_modules`).
 
 ##Run
-Install node-webkit >= 0.13 (eg. `npm install -g nodewebkit`) and run `nw fuckr`
+Install node-webkit >= 0.12 (eg. `npm install -g nodewebkit`) and run `nw fuckr`
 
 ##Develop
 

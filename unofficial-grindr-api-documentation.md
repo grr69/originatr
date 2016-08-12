@@ -1,4 +1,4 @@
-#Unofficial Grindr API documentation
+#Unofficial Grindr API v2 documentation
 
 ##Services List
 Issue an unauthenticated GET request to `https://primus.grindr.com/2.0/services` to get a list of server names you'll use.  Example response:

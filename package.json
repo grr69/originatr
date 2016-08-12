@@ -1,6 +1,6 @@
 {
   "name": "fuckr",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "Desktop grindr client for Mac and Windows",
   "main": "package.js",
   "scripts": {
@@ -13,16 +13,14 @@
     "url": "https://github.com/tomlandia/fuckr.git"
   },
   "author": "@tomlandia",
-  "license": "BSD",
+  "license": "BSD-2-Clause",
   "bugs": {
     "url": "https://github.com/tomlandia/fuckr/issues"
   },
   "homepage": "https://github.com/tomlandia/fuckr",
   "devDependencies": {
-    "nw-builder": "git://github.com/evshiron/nw-builder",
+    "nw-builder": "*",
     "appdmg": "*",
-    "archiver": "*",
-    "nw": "~0.14.2",
-    "coffee-script": "*"
+    "archiver": "*"
   }
 }
