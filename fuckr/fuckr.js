@@ -58,7 +58,7 @@ authenticateFactory = function($localStorage, $http, $rootScope, $q, $location) 
     });
   };
   restart = function() {
-    return window.location.reload('/');
+    return location.reload();
   };
   $rootScope.logoutAndRestart = function() {
     localStorage.removeItem('ngStorage-authenticationToken');
@@ -73,8 +73,9 @@ authenticateFactory = function($localStorage, $http, $rootScope, $q, $location) 
 angular.module('authenticate', ['ngStorage']).factory('authenticate', ['$localStorage', '$http', '$rootScope', '$q', '$location', authenticateFactory]);
 
 chat = function($http, $localStorage, $rootScope, $q, profiles) {
-  var acknowledgeMessages, addMessage, client, createConversation, jacasr, s4, sendMessage, uuid;
+  var acknowledgeMessages, addMessage, client, createConversation, gui, jacasr, nwWindow, s4, sendMessage, uuid;
   jacasr = require('jacasr');
+  nwWindow = gui = require('nw.gui').Window.get();
   s4 = function() {
     return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
   };
@@ -180,9 +181,16 @@ chat = function($http, $localStorage, $rootScope, $q, profiles) {
       message = angular.fromJson(json);
       return addMessage(message);
     });
-    return client.on('close', function() {
+    client.on('close', function() {
       $rootScope.chatError = true;
       return alert("XMPP chat error. If you're using public wifi, XMPP protocol is probably blocked.");
+    });
+    window.onbeforeunload = function() {
+      return client.disconnect();
+    };
+    return nwWindow.on('close', function() {
+      client.disconnect();
+      return this.close(true);
     });
   });
   sendMessage = function(type, body, to, save) {

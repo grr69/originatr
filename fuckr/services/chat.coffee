@@ -7,6 +7,7 @@
 #   - notify Grindr you blocked someone (managed by profiles controller)
 chat = ($http, $localStorage, $rootScope, $q, profiles) ->
     jacasr = require('jacasr')
+    nwWindow = gui = require('nw.gui').Window.get()
 
     s4 = -> Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
     uuid = -> "#{s4()}#{s4()}-#{s4()}-#{s4()}-#{s4()}-#{s4()}#{s4()}#{s4()}".toUpperCase()
@@ -82,6 +83,13 @@ chat = ($http, $localStorage, $rootScope, $q, profiles) ->
         client.on 'close', ->
             $rootScope.chatError = true
             alert("XMPP chat error. If you're using public wifi, XMPP protocol is probably blocked.")
+
+        window.onbeforeunload = ->
+          client.disconnect()
+
+        nwWindow.on 'close', ->
+          client.disconnect()
+          this.close(true)
 
     sendMessage = (type, body, to, save=true) ->
         message =

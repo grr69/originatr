@@ -59,7 +59,7 @@ authenticateFactory = ($localStorage, $http, $rootScope, $q, $location) ->
                 resolve()
 
 
-    restart = -> window.location.reload('/')
+    restart = -> location.reload()
     $rootScope.logoutAndRestart = ->
         #bypassing ngStorage to delete key immediately
         localStorage.removeItem('ngStorage-authenticationToken')
