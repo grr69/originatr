@@ -382,3 +382,24 @@ After receiving a message from the XMPP server, the official client acknowledges
 
 If successful, the server responds with HTTP/200 and an empty JSON object.
 
+Note that you'll still want to ack the messages to the XMPP server as well, using XEP-0333 and/or XEP-0198.
+
+#Chat
+
+_TODO: Document the XMPP side of things._
+
+#Unknown APIs
+Disassembly of the official Android app shows that there are more APIs that we haven't yet reverse-engineered:
+
+```
+/v3/flags/{id}
+/v3/me/conversations
+/v3/me/conversations/{id}
+/v3/me/pics
+/v3/me/prefs/chat-pix/{hash}
+/v3/me/prefs/phrases
+/v3/users/email
+```
+
+_TODO: Figure out what these do and document them._
+
