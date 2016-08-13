@@ -163,9 +163,9 @@ To issue an authenticated HTTP request, add the HTTP header
 That is, take the literal string "Grindr3 " and append the Session Id.
 That's your `Authorization` header.
 
-#Account management
+##Account management
 
-##Update the user's public profile
+###Update the user's public profile
 Issue an authenticated PUT to `https://grindr.mobi/v3/me/profile` with payload like this:
 
     {
@@ -200,7 +200,7 @@ Issue an authenticated PUT to `https://grindr.mobi/v3/me/profile` with payload l
 
 If successful, the server responds with HTTP/200 and an empty JSON object.
 
-##Query user preferences
+###Query user preferences
 Issue an authenticated GET to `https://grindr.mobi/v3/me/prefs`.  Example response:
 
     {
@@ -221,9 +221,9 @@ Issue an authenticated GET to `https://grindr.mobi/v3/me/prefs`.  Example respon
 
 Note that the image hash is indeed repeated for some reason.
 
-unitSystem 1 is USA Imperial units.
+`unitSystem` = 1 means USA Imperial units.
 
-##Get system messages
+###Get system messages
 Issue an authenticated GET to `https://grindr.mobi/v3/systemMessages` with no payload.
 
 If successful, the server returns HTTP/200 with this payload:
@@ -236,7 +236,7 @@ _TODO: Get an example with actual payload._
 
 Note that if you're migrating from v2, the return value has changed from a JSON array to a JSON object that wraps an array.
 
-##Change user password
+###Change user password
 Issue an authenticated POST to `https://grindr.mobi/v3/users/update-password` with the payload:
 
     {
@@ -256,7 +256,36 @@ If successful, the server response with HTTP/200 and a new Authentication Token 
 Replace the Authentication Token you'd saved earlier with the new one.
 Start using the new Session Id in future authenticated HTTP requests.
 
-##Delete the account
+###Change the email address associated with the account
+Issue an authenticated POST to `https://grindr.mobi/v3/users/email` with the payload:
+
+    {
+        "newEmail": "user@example.com",
+        "password": "my cool password"
+    }
+
+If the operation fails, the server returns an HTTP/4xx code.
+For example, if the email address is already in use by a different account, the server returns HTTP/409 with this payload:
+
+    {
+        "code": 22,
+        "message": "Email id already exists"
+    }
+
+
+If successful, the server response with HTTP/200 and a new Authentication Token and session:
+
+    {
+        "authToken": "<the Authentication Token>",
+        "profileId": "<the Profile Id>",
+        "sessionId": "<a Session Id for immediate use>",
+        "xmppToken": "<an XMPP Token for immediate use>"
+    }
+
+Replace the Authentication Token you'd saved earlier with the new one.
+Start using the new Session Id in future authenticated HTTP requests.
+
+###Delete the account
 To remove the account from the current device, just securely erase the Authentication Token and any other state you've accumulated.
 
 You can optionally also delete the account *from the server*.
@@ -266,9 +295,9 @@ Issue an authenticated DELETE to `https://grindr.mobi/v3/me/profile` with no pay
 If successful, the server responds with HTTP/200 and an empty JSON object.
 The account is gone.
 
-#Interacting with other users
+##Interacting with other users
 
-##Get messages that were sent while you were logged official
+###Get messages that were sent while you were logged official
 Issue an authenticated POST to `https://grindr.mobi/v3/me/chat/messages?undelivered=true` with no payload. 
 (Not an empty JSON object -- the Content-Length should be 0 and the Content-Type is absent.)
 
@@ -280,7 +309,7 @@ If successful, the server responds with HTTP/200 and an object containing an arr
 
 _TODO: Get some actual messages to make the example more useful._
 
-##See nearby users
+###See nearby users
 Issue an authenticated GET to `https://grindr.mobi/v3/locations/<Geohash>/profiles` with no payload.
 You can optionally add query parameters.
 These are known:
@@ -331,17 +360,17 @@ The Profile image hash can be dropped into either of these CDN URLs:
 
 Note that the thumbnail size was increased between v2 (187px) and v3 (320px), and the URL has changed correspondingly.
 
-##Add a user to your favorites (add a star)
+###Add a user to your favorites (add a star)
 Issue an authenticated POST to `https://grindr.mobi/v3/favorites/<his profile id>` with no payload.
 (Not an empty JSON object -- the Content-Length should be 0 and the Content-Type is absent.)
 If successful, the server responds with HTTP/200 and an empty JSON object.
 
-##Remove a user from your favorites (remove a star)
+###Remove a user from your favorites (remove a star)
 Issue an authenticated DELETE to `https://grindr.mobi/v3/favorites/<his profile id>` with no payload.
 (Not an empty JSON object -- the Content-Length should be 0 and the Content-Type is absent.)
 If successful, the server responds with HTTP/200 and an empty JSON object.
 
-##See who's blocking you and who you've blocked
+###See who's blocking you and who you've blocked
 Issue an authenticated GET request to `https://grindr.mobi/v3/me/blocks` with no payload.
 
 If successful, the server response with HTTP/200 and this payload:
@@ -361,16 +390,16 @@ In the example above, 2 users have blocked you, and you are blocking 1 user.
 Note that the datatype of the Profile Id has changed -- in v2, it was a JSON integer.
 But in v3, the Profile Id is a JSON string.
 
-##Block a user
+###Block a user
 Issue an authenticated POST to `https://grindr.mobi/v3/blocks/<his profile id>` with no payload.
 (Not an empty JSON object -- the Content-Length should be 0 and the Content-Type is absent.)
 If successful, the server responds with HTTP/200 and an empty JSON object.
 
-##Unblock all blocked users
+###Unblock all blocked users
 Issue an authenticated DELETE to `https://grindr.mobi/v3/me/blocks`.
 If successful, server response HTTP/200 with an empty JSON object.
 
-##Acknowledging chats
+###Acknowledging chats
 After receiving a message from the XMPP server, the official client acknowledges the message by sending an authenticated PUT request to `https://grindr.mobi/v3/me/chat/messages?confirmed=true` with the following payload:
 
     {
@@ -384,21 +413,56 @@ If successful, the server responds with HTTP/200 and an empty JSON object.
 
 Note that you'll still want to ack the messages to the XMPP server as well, using XEP-0333 and/or XEP-0198.
 
-#Chat
+##Photos
+Grindr doesn't use photos directly.
+Instead, Grindr uses a hash of the photo.
+When you'd like to use a photo (either to modify your profile pic, or to send in chat), you first need to convert your photo into a hash.
+
+###Uploading a photo
+To convert a photo into a hash, issue an authenticated POST request to `https://g3-beta-upload.grindr.com/v3/me/pics?type=chat` with `Content-Type: image/jpeg` and the payload as the actual JPEG image.
+If the JPEG is too large, you'll need to first resize it.
+(On v2, the image size threshold was about 800kb -- it's unknown exactly what the maximium size is in v3.)
+
+If the upload is successful, the server responds with HTTP/200 and this response:
+
+    {
+        "mediaHash": "<Image hash>"
+    }
+    
+The hash can now be used on the CDN, for example: `http://cdns.grindr.com/grindr/chat/<Image hash>`
+
+###Saving the photo to the user's favorite chat photos
+Grindr maintains a server-side list of favorite chat photos.
+To add a photo to the list, issue an authenticated POST to `https://grindr.mobi/v3/me/prefs/chat-pix/<Image hash>`.
+
+If successful, the server responds with HTTP/200 and this rather redundant response:
+
+    {
+        "mediaHash": "<Image hash>"
+    }
+
+###Removing a photo from the user's favorite chat photos
+Grindr maintains a server-side list of favorite chat photos.
+To remove a photo from the list, issue an authenticated DELETE to `https://grindr.mobi/v3/me/prefs/chat-pix/<Image hash>`.
+If successful, the server responds with HTTP/200 and an empty JSON object.
+
+###Retreiving a list of the user's favorite chat photos
+See the **Query user preferences** section.
+The favorite chat photos are stored in the `chatPix` object.
+
+##Chat
 
 _TODO: Document the XMPP side of things._
 
-#Unknown APIs
+##Unknown APIs
 Disassembly of the official Android app shows that there are more APIs that we haven't yet reverse-engineered:
 
 ```
-/v3/flags/{id}
+/v3/flags/{id}             // possibly reporting spammers?
 /v3/me/conversations
 /v3/me/conversations/{id}
 /v3/me/pics
-/v3/me/prefs/chat-pix/{hash}
-/v3/me/prefs/phrases
-/v3/users/email
+/v3/me/prefs/phrases       // probably an xtra feature to add canned phrases
 ```
 
 _TODO: Figure out what these do and document them._
