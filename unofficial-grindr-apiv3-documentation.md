@@ -223,6 +223,19 @@ Note that the image hash is indeed repeated for some reason.
 
 unitSystem 1 is USA Imperial units.
 
+##Get system messages
+Issue an authenticated GET to `https://grindr.mobi/v3/systemMessages` with no payload.
+
+If successful, the server returns HTTP/200 with this payload:
+
+    {
+        "systemMessages": []
+    }
+
+_TODO: Get an example with actual payload._
+
+Note that if you're migrating from v2, the return value has changed from a JSON array to a JSON object that wraps an array.
+
 ##Change user password
 Issue an authenticated POST to `https://grindr.mobi/v3/users/update-password` with the payload:
 
@@ -339,11 +352,14 @@ If successful, the server response with HTTP/200 and this payload:
             "<another Profile Id>"
         ],
         "blocking": [
-            "<his Profile ID>"
+            "<his Profile Id>"
         ]
     }
 
 In the example above, 2 users have blocked you, and you are blocking 1 user.
+
+Note that the datatype of the Profile Id has changed -- in v2, it was a JSON integer.
+But in v3, the Profile Id is a JSON string.
 
 ##Block a user
 Issue an authenticated POST to `https://grindr.mobi/v3/blocks/<his profile id>` with no payload.
