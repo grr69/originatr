@@ -397,7 +397,26 @@ If successful, the server responds with HTTP/200 and an empty JSON object.
 
 ###Unblock all blocked users
 Issue an authenticated DELETE to `https://grindr.mobi/v3/me/blocks`.
-If successful, server response HTTP/200 with an empty JSON object.
+If successful, server responds HTTP/200 with an empty JSON object.
+
+###Reporting abuse to the moderator
+There are several categories of abuse, for example, spamming or impersonation.
+Refer to **Managed fields** to see the full list of categories.
+Select the category that best applies to the situation.
+
+Issue an authenticated POST to `https://grindr.mobi/v3/flags/<Profile Id>` with the payload:
+
+    {
+        "comment": "Spam",
+        "reason": 5
+    }
+    
+The `reason` is an integer that specifies which category of abuse you're reporting, taken from the managed fields.
+The `comment` field appears to just re-state the description from the same managed field.
+(In v2, the GUI allowed the user to type out an explanation of the problem, and that would be submitted as the `comment` in the equivalent v2 API.
+One can only imagine the quality of those comments led Grindr to remove the GUI for typing a custom explanation, but the API still retains a vestigial comment field.)
+
+If successful, server responds HTTP/200 with an empty JSON object.
 
 ###Acknowledging chats
 After receiving a message from the XMPP server, the official client acknowledges the message by sending an authenticated PUT request to `https://grindr.mobi/v3/me/chat/messages?confirmed=true` with the following payload:
@@ -458,7 +477,6 @@ _TODO: Document the XMPP side of things._
 Disassembly of the official Android app shows that there are more APIs that we haven't yet reverse-engineered:
 
 ```
-/v3/flags/{id}             // possibly reporting spammers?
 /v3/me/conversations
 /v3/me/conversations/{id}
 /v3/me/pics
