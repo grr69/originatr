@@ -226,13 +226,18 @@ Note that the image hash is indeed repeated for some reason.
 ###Get system messages
 Issue an authenticated GET to `https://grindr.mobi/v3/systemMessages` with no payload.
 
-If successful, the server returns HTTP/200 with this payload:
+If successful, the server returns HTTP/200 with a payload that contains a `systemMessages` object with zero or more messages:
 
     {
-        "systemMessages": []
+        "systemMessages": [
+            {
+                "mediaHash": "<Media hash>",
+                "message": "Your photo has been rejected.",
+                "messageId": <integer>,
+                "type": "ProfileImageRejected"
+            }
+        ]
     }
-
-_TODO: Get an example with actual payload._
 
 Note that if you're migrating from v2, the return value has changed from a JSON array to a JSON object that wraps an array.
 
@@ -475,11 +480,16 @@ Encode the photo as a JPEG.
 If the JPEG is too large, you'll need to first resize it.
 (On v2, the image size threshold was about 800kb -- it's unknown exactly what the maximium size is in v3.)
 
-Issue an authenticated POST to `https://g3-beta-upload.grindr.com/v3/me/pics?type=profile&thumbCoords=<R>%2C<T>%2C<B>%2C<L>` with the large JPEG as payload.  
-Set `<R>` to the x-offset of the right side of the thumbnail.
-Set `<R>` to the x-offset of the right side of the thumbnail.
-Set `<R>` to the x-offset of the right side of the thumbnail.
-Set `<R>` to the x-offset of the right side of the thumbnail.
+Issue an authenticated POST to `https://g3-beta-upload.grindr.com/v3/me/pics?type=profile&thumbCoords=<R>%2C<T>%2C<B>%2C<L>` with the large JPEG as payload.
+
+* Set `<R>` to the x-offset of the right edge of the thumbnail.
+* Set `<T>` to the y-offset of the top edge of the thumbnail.
+* Set `<B>` to the y-offset of the bottom edge of the thumbnail.
+* Set `<L>` to the x-offset of the left edge of the thumbnail.
+
+Because the thumbnail must be square, you must ensure that `<R> - <L> == <B> - <T>`.
+You must also ensure that `<R>` is not larger than the width of the large JPEG, and `<B>` is not larger than the height of the large JPEG.
+
 If successful, the server responds with HTTP/200 and this JSON payload:
 
     {
@@ -487,6 +497,7 @@ If successful, the server responds with HTTP/200 and this JSON payload:
         "mediaHash": "<Image hash>"
     }
 
+You will need to poll for system messages to find out whether the profile was approved by Grindr's moderators -- see **System messages** above.
 
 ##Chat
 
