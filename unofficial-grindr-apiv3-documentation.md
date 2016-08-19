@@ -469,6 +469,25 @@ If successful, the server responds with HTTP/200 and an empty JSON object.
 See the **Query user preferences** section.
 The favorite chat photos are stored in the `chatPix` object.
 
+###Changing your profile photo
+Encode the photo as a JPEG.
+(Unlike the v2 API, you must crop the large photo on the client side; the server only crops the thumbnail.)
+If the JPEG is too large, you'll need to first resize it.
+(On v2, the image size threshold was about 800kb -- it's unknown exactly what the maximium size is in v3.)
+
+Issue an authenticated POST to `https://g3-beta-upload.grindr.com/v3/me/pics?type=profile&thumbCoords=<R>%2C<T>%2C<B>%2C<L>` with the large JPEG as payload.  
+Set `<R>` to the x-offset of the right side of the thumbnail.
+Set `<R>` to the x-offset of the right side of the thumbnail.
+Set `<R>` to the x-offset of the right side of the thumbnail.
+Set `<R>` to the x-offset of the right side of the thumbnail.
+If successful, the server responds with HTTP/200 and this JSON payload:
+
+    {
+        "action": "pending",
+        "mediaHash": "<Image hash>"
+    }
+
+
 ##Chat
 
 _TODO: Document the XMPP side of things._
