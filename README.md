@@ -18,5 +18,5 @@ If there's anything else you want to know, you can easily analyse the HTTPS part
 
 ##Credits
 - Logo: [Reyson Morales](http://reyson-morales.deviantart.com/)
-- Contributions: [Victor Grego](https://github.com/victorgrego)
+- Contributions: @victorgrego and @shyrat
 - Download Page: copied from [Tinder++](https://github.com/mfkp/tinderplusplus)
