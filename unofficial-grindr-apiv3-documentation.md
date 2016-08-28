@@ -18,6 +18,31 @@ Issue an unauthenticated GET request to `https://grindr.mobi/v3/bootstrap` to ge
 Example response:
 
     {
+        "configuration": {
+            "app": {
+                "broadcastsToDisplay": 3,
+                "cascadeTtl": 420000,
+                "maxBlocksPerDay": 10,
+                "maxCascadePages": 1,
+                "maxFavoritesPerDay": 10,
+                "maxPhotosAtOnce": 1,
+                "profileQuantityPerCascadePage": 100,
+                "profileTtl": 120000,
+                "sendSavedPhrases": {
+                    "enabled": false
+                }
+            },
+            "serverTime": <integer with Unix timestamp in milliseconds>,
+            "serverTimeMillis": <integer with Unix timestamp in milliseconds>,
+            "user": {
+                "eligibleForFreeTrial": true,
+                "subscription": {
+                    "remainingTimeMillis": 0,
+                    "subscriptionId": null
+                },
+                "userRole": "Free"
+            }
+        },
         "services": {
             "api": [
                 {
@@ -34,9 +59,51 @@ Example response:
                     "port": 443,
                     "protocol": "https"
                 }
+            ],
+            "chat": [
+                {
+                    "domain": "chat.grindr.com",
+                    "host": "chat.grindr.com",
+                    "port": 5222,
+                    "protocol": "xmpp"
+                }
+            ],
+            "media": [
+                {
+                    "host": "cdns.grindr.com",
+                    "path": "",
+                    "port": 80,
+                    "protocol": "http"
+                }
+            ],
+            "upload": [
+                {
+                    "host": "g3-beta-upload.grindr.com",
+                    "path": "",
+                    "port": 443,
+                    "protocol": "https"
+                }
+            ],
+            "web": [
+                {
+                    "host": "neo-store.grindr.com",
+                    "path": "/",
+                    "port": 443,
+                    "protocol": "https"
+                }
             ]
         }
     }
+
+It's unclear what the v3 client uses the `services` table for, as the v3 client hardcodes the API server to `grindr.mobi`.
+In v2, the `web` service was used for upsells and the `authenticationWeb` was used for account creation, but in v3, these are all REST APIs on the `grindr.mobi` server now.
+Possibly the `services` table isn't used by the v3 client.
+
+The `configuration.app` section seems to correspond to premium client-side features.
+`serverTime` and `serverTimeMillis` are the same integer; possibly the redundancy is there for compatiblity with various clients.
+
+The `configuration` section was present in v2, but was initially missing from the 3.0.x series.
+It was added back in either 3.0.2 or 3.0.3.
 
 ###Managed fields
 Certain enums and flags are downloaded from the server.
@@ -309,10 +376,28 @@ Issue an authenticated POST to `https://grindr.mobi/v3/me/chat/messages?undelive
 If successful, the server responds with HTTP/200 and an object containing an array of offline messages:
 
     {
-        "messages": []
+        "messages": [
+            {
+                "body": "Hey what's up?",
+                "messageId": "<unique message id>",
+                "sourceDisplayName": "<the Display Name from his profile>",
+                "sourceProfileId": "<his Profile Id>",
+                "targetProfileId": "<your Profile Id>",
+                "timestamp": <integer of Unix timestamp, in milliseconds>,
+                "type": "text"
+            },
+            {
+                "body": "Hola",
+                "messageId": "<another unique message id>",
+                "sourceProfileId": "<his Profile Id>",
+                "targetProfileId": "<your Profile Id>",
+                "timestamp": <integer of Unix timestamp, in milliseconds>,
+                "type": "text"
+            }
     }
 
-_TODO: Get some actual messages to make the example more useful._
+Messages are formatted roughly the same as in XMPP chat.
+Not all messages have a `sourceDisplayName`.
 
 ###See nearby users
 Issue an authenticated GET to `https://grindr.mobi/v3/locations/<Geohash>/profiles` with no payload.
@@ -364,6 +449,25 @@ The Profile image hash can be dropped into either of these CDN URLs:
     http://cdns.grindr.com/images/thumb/320x320/<his Profile image hash>
 
 Note that the thumbnail size was increased between v2 (187px) and v3 (320px), and the URL has changed correspondingly.
+
+###Get the profile of specific users
+If you know the Profile IDs of specific users, you can fetch the contents of their profiles by issuing an authenticated POST to `https://grindr.mobi/v3/profiles` with this payload:
+
+    {
+        "targetProfileIds": [
+            "12345678",
+            "23456789"
+        ]
+    }
+
+The server responds with the profile details for each of the requested profiles.
+The response is the same as to the `locations` API above, and won't be repeated here.
+
+In some cases, the client uses an alternate method to query profiles.
+Issue an authenticated GET to `https://grindr.mobi/v3/profiles/<his Profile Id>`.
+The server response is identical to above, except it only returns a single profile in each request.
+
+It's not clear why there are two methods to query a profile.
 
 ###Add a user to your favorites (add a star)
 Issue an authenticated POST to `https://grindr.mobi/v3/favorites/<his profile id>` with no payload.
@@ -502,6 +606,39 @@ You will need to poll for system messages to find out whether the profile was ap
 ##Chat
 
 _TODO: Document the XMPP side of things._
+
+##Advertising and telemetry
+The official app communicates with a large number of advertising and analytics servers.
+
+###Broadcast messages
+In addition to general-purpose ad networks, Grindr also runs its own ad delivery system through its REST endpoint.
+Should you feel the need to look at their ads, send a GET to `https://grindr.mobi/v3/broadcastMessages`.
+Although the API doesn't *require* authentication, ads are targeted to the individual, so you probably won't get any ads unless you authenticate.
+
+If successful, the server responds with HTTP/200 and this payload:
+
+    {
+        "broadcastMessages": [
+            {
+                "actionTitle": "More",
+                "body": "Don't miss this amazing bar in <user's town>. Tap 'More' for info.",
+                "dismissTitle": "Close",
+                "expirationDate": <integer with Unix timestamp in milliseconds>,
+                "messageId": <integer represending the Advertisement Id>,
+                "title": "Meet local singles",
+                "url": "http://grindr.me/123456"
+            },
+            {
+                "actionTitle": "More",
+                "body": "But prefer travel. Tap \"More\" to download and find a room now. ",
+                "dismissTitle": "Close",
+                "expirationDate": <integer with Unix timestamp in milliseconds>,
+                "messageId": <integer represending the Advertisement Id>,
+                "title": "We Can Host",
+                "url": "https://app.adjust.com/<redacted>?campaign=<redacted>&adgroup=Grindr&creative=<redacted>"
+            }
+        ]
+    }
 
 ##Unknown APIs
 Disassembly of the official Android app shows that there are more APIs that we haven't yet reverse-engineered:
