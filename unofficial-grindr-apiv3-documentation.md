@@ -369,7 +369,7 @@ The account is gone.
 
 ##Interacting with other users
 
-###Get messages that were sent while you were logged official
+###Get messages that were sent while you were logged out
 Issue an authenticated POST to `https://grindr.mobi/v3/me/chat/messages?undelivered=true` with no payload. 
 (Not an empty JSON object -- the Content-Length should be 0 and the Content-Type is absent.)
 
@@ -418,6 +418,7 @@ Example:
 If successful, the server responds wtih HTTP/200 and the following array:
 
     {
+        "ttl": 420000,
         "profiles": [
             {
                 "age": null,
@@ -449,6 +450,9 @@ The Profile image hash can be dropped into either of these CDN URLs:
     http://cdns.grindr.com/images/thumb/320x320/<his Profile image hash>
 
 Note that the thumbnail size was increased between v2 (187px) and v3 (320px), and the URL has changed correspondingly.
+
+The `ttl` is probably a hint on how many milliseconds to wait before polling again.
+The value 420000ms = 7 minutes, which correlates well with the official client's apparent polling interval.
 
 ###Get the profile of specific users
 If you know the Profile IDs of specific users, you can fetch the contents of their profiles by issuing an authenticated POST to `https://grindr.mobi/v3/profiles` with this payload:
