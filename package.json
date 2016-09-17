@@ -6,7 +6,7 @@
   "scripts": {
     "build": "cat fuckr/services/*.coffee fuckr/controllers/*.coffee fuckr/directives.coffee fuckr/fuckr.coffee | coffee -cbs > fuckr/fuckr.js",
     "package": "npm run build && node package.js",
-    "run": "npm run build && nw ."
+    "run": "npm run build && nw fuckr"
   },
   "repository": {
     "type": "git",
