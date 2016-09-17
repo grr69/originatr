@@ -491,7 +491,9 @@ chatController = function($scope, $routeParams, chat, uploadImage) {
   $scope.$on('new_message', function() {
     if ($scope.conversationId) {
       $scope.conversation = chat.getConversation($scope.conversationId);
-      $scope.conversation.unread = false;
+      if ($scope.conversation) {
+        $scope.conversation.unread = false;
+      }
     }
     return $scope.lastestConversations = chat.lastestConversations();
   });
