@@ -5,7 +5,7 @@
 #   - get messages sent while you were offline (/undeliveredChatMessages)
 #   - confirm receiption (/confirmChatMessagesDelivered)
 #   - notify Grindr you blocked someone (managed by profiles controller)
-chat = ($http, $localStorage, $rootScope, $q, profiles) ->
+chat = ($http, $localStorage, $rootScope, $q, profiles, API_URL) ->
     jacasr = require('jacasr')
     nwWindow = gui = require('nw.gui').Window.get()
 
@@ -58,7 +58,7 @@ chat = ($http, $localStorage, $rootScope, $q, profiles) ->
 
 
     acknowledgeMessages = (messageIds) ->
-        $http.post('https://primus.grindr.com/2.0/confirmChatMessagesDelivered', {messageIds: messageIds})
+        $http.put(API_URL + 'me/chat/messages?confirmed=true', {messageIds: messageIds})
     
     $rootScope.$on 'authenticated', (event, token) ->
         client = new jacasr.Client
@@ -68,7 +68,7 @@ chat = ($http, $localStorage, $rootScope, $q, profiles) ->
 
         client.on 'ready', ->
             chat.connected = true
-            $http.get('https://primus.grindr.com/2.0/undeliveredChatMessages').then (response) ->
+            $http.get(API_URL + 'me/chat/messages?undelivered=true').then (response) ->
                 messageIds = []
                 _(response.data).sortBy((message) -> message.timestamp).forEach (message) ->
                     addMessage(message)
@@ -133,4 +133,4 @@ chat = ($http, $localStorage, $rootScope, $q, profiles) ->
     }
 
 
-fuckr.factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', chat])
+fuckr.factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', 'API_URL', chat])

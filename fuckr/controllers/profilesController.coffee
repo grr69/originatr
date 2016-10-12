@@ -5,8 +5,8 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, $
             name: 'San Francisco, CA'
             lat: 37.7833
             lon: -122.4167
-            geohash: '9q8yyq4zsjse'
         ###
+            geohash: '9q8yyq4zsjse'
         filter:
             ageMinimum: null
             ageMaximum: null
