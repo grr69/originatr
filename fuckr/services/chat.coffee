@@ -133,6 +133,4 @@ chat = ($http, $localStorage, $rootScope, $q, profiles) ->
     }
 
 
-angular
-    .module('chat', ['ngStorage', 'profiles'])
-    .factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', chat])
+fuckr.factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', chat])

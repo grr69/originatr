@@ -41,7 +41,6 @@ profiles = ($http, $q, $rootScope) ->
     }
 
 
-angular
-    .module('profiles', [])
-    .factory('profiles', ['$http', '$q', '$rootScope', profiles])
+
+fuckr.factory('profiles', ['$http', '$q', '$rootScope', profiles])
     

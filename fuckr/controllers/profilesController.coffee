@@ -112,8 +112,7 @@ lastTimeActive = ->
         else if hours < 48 then "Active yesterday"
         else "Active #{Math.floor(hours / 24)} days ago"
 
-angular
-    .module('profilesController', ['ngRoute', 'ngStorage', 'ngMap', 'profiles', 'pinpoint'])
+fuckr
     .filter('gramToLocalUnit', ['$localStorage', gramToLocalUnit])
     .filter('cmToLocalUnit', ['$localStorage', cmToLocalUnit])
     .filter('lastTimeActive', lastTimeActive)

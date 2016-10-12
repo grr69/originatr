@@ -1,4 +1,4 @@
-angular.module('uploadImage', []).factory 'uploadImage', ['$http', '$q', ($http, $q) ->
+fuckr.factory 'uploadImage', ['$http', '$q', ($http, $q) ->
     uploadImage = (file, urlFunction) ->
         deferred = $q.defer()
         #dirty vanilla JS trick to figure out dimensions

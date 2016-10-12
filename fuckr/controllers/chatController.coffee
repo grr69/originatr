@@ -84,8 +84,7 @@ scrollDownOnNewConversation = ->
             if value
                 setTimeout (-> element[0].scrollTop = 100000), 100
 
-angular
-    .module('chatController', ['ngRoute', 'file-model', 'chat', 'uploadImage'])
+fuckr
     .controller('chatController', ['$scope', '$routeParams', 'chat', 'uploadImage', chatController])
     .directive('onEnter', onEnter)
     .directive('scrollDownOnNewConversation', scrollDownOnNewConversation)

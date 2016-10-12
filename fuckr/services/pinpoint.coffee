@@ -81,6 +81,4 @@ pinpoint = ($q, $localStorage, profiles) ->
     }
 
 
-angular
-    .module('pinpoint', ['profiles'])
-    .factory('pinpoint', ['$q', '$localStorage', 'profiles', pinpoint])
+fuckr.factory('pinpoint', ['$q', '$localStorage', 'profiles', pinpoint])
