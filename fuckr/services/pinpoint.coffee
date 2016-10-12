@@ -38,15 +38,12 @@ pinpoint = ($q, $localStorage, profiles) ->
 
 
     randomizedLocation = ->
-        lat: $localStorage.grindrParams.lat + ((Math.random() - 0.5) / 100) #+/- ~500m north
-        lon: $localStorage.grindrParams.lon + ((Math.random() - 0.5) / 100) #+/- ~500m east
+        lat: $localStorage.location.lat + ((Math.random() - 0.5) / 100) #+/- ~500m north
+        lon: $localStorage.location.lon + ((Math.random() - 0.5) / 100) #+/- ~500m east
 
     getNearbyProfiles = (locations) ->
         promises = locations.map (location) ->
-            params = _.clone($localStorage.grindrParams)
-            params.lat = location.lat
-            params.lon = location.lon
-            profiles.nearby(params)
+            profiles.nearby(location)
         $q.all(promises)
         
 
