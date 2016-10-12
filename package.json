@@ -1,10 +1,10 @@
 {
   "name": "fuckr",
-  "version": "1.7.0",
+  "version": "2.0.0-alpha",
   "description": "Desktop grindr client for Mac and Windows",
   "main": "package.js",
   "scripts": {
-    "build": "cat fuckr/services/*.coffee fuckr/controllers/*.coffee fuckr/directives.coffee fuckr/fuckr.coffee | coffee -cbs > fuckr/fuckr.js",
+    "build": "cat fuckr/fuckr.coffee fuckr/services/*.coffee fuckr/controllers/*.coffee fuckr/directives.coffee | coffee -cbs > fuckr/fuckr.js",
     "package": "npm run build && node package.js",
     "run": "npm run build && nw fuckr"
   },
@@ -19,10 +19,10 @@
   },
   "homepage": "https://github.com/tomlandia/fuckr",
   "devDependencies": {
-    "nw-builder": "*",
-    "archiver": "*"
+    "nw-builder": "3.1.2",
+    "archiver": "1.1.0"
   },
   "optionalDependencies": {
-    "appdmg": "*"
+    "appdmg": "0.4.5"
   }
 }
