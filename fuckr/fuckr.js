@@ -699,9 +699,10 @@ profilesController = function($scope, $interval, $localStorage, $routeParams, $w
     });
     return delete $scope.profile;
   };
-  return managedFields.then(function(response) {
+  managedFields.then(function(response) {
     return $scope.managedFields = response.data.fields;
   });
+  return $scope.sexualPositions = ['', 'Top', 'Bottom', 'Versatile', 'Vers Bottom', 'Vers Top', 'Oral Only'];
 };
 
 gramToLocalUnit = function($localStorage) {

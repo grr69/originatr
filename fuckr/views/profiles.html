@@ -79,12 +79,13 @@
 
     <p>{{profile.seen | lastTimeActive}}</p>
 
-    <table ng-show="profile.height || profile.weight || profile.age" class="pure-table">
+    <table ng-show="profile.height || profile.weight || profile.age || profile.sexualPosition" class="pure-table">
       <thead>
         <tr>
           <th>Age</th>
           <th>Height</th>
           <th>Weight</th>
+          <th>Position</th>
         </tr>
       </thead>
       <tbody>
@@ -92,6 +93,7 @@
           <td>{{profile.age}}</td>
           <td>{{profile.height | cmToLocalUnit}}</td>
           <td>{{profile.weight | gramToLocalUnit}}</td>
+          <td>{{sexualPositions[profile.sexualPosition]}}
         </tr>
       </tbody>
     </table>

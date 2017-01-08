@@ -79,6 +79,8 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, $
         delete $scope.profile
 
     managedFields.then (response) -> $scope.managedFields = response.data.fields
+    #only included in v3 managed-fields
+    $scope.sexualPositions = ['', 'Top', 'Bottom', 'Versatile', 'Vers Bottom', 'Vers Top', 'Oral Only']
 
 gramToLocalUnit = ($localStorage) ->
     (grams) ->
