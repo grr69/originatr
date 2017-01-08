@@ -17,6 +17,6 @@
     "run": "npm run build && nw ."
   },
   "chromium-args": "--ignore-certificate-errors --disable-setuid-sandbox",
-  "user-agent": "Dalvik/1.6.0 (Linux; U; Android 4.4.2; 7040T Build/KVT49L)",
+  "user-agent": "grindr3/3.0.1.4529;4529;Unknown;Android 4.4.4",
   "no-edit-menu": false
 }
