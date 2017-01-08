@@ -25,7 +25,7 @@ function runNwBuilder() {
   var nw = new NwBuilder({
     files: 'fuckr/**',
     platforms: PLATFORMS,
-    version: '0.16.1',
+    version: '0.12.3',
     appName: 'Fuckr',
     appVersion: VERSION,
     winIco: /^win/.test(process.platform) ? 'icons/win.ico' : null,
