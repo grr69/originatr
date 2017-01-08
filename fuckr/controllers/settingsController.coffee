@@ -32,6 +32,6 @@ weightInput = ->
         ngModel.$formatters.push (gramsInput) -> gramsInput / 1000
         ngModel.$parsers.push (kgInput) -> kgInput * 1000
 
-angular
+fuckr
     .controller('settingsController', ['$scope', '$http', '$localStorage', 'profiles', 'uploadImage', 'API_URL', settingsController])
     .directive('weightInput', weightInput)

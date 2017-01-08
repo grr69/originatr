@@ -1,11 +1,10 @@
 authentication = ($localStorage, $http, $rootScope, $q, $location, API_URL) ->
-    GCM_SENDER_ID = 745476177629
     getGCMToken = ->
-        $q(resolve, reject) ->
-            if $localStorage.gcmToken
+        $q (resolve, reject) ->
+            if false and $localStorage.gcmToken
                 resolve($localStorage.gcmToken)
             else
-                google.gcm.register [GCM_SENDER_ID], (token) ->
+                chrome.instanceID.getToken {authorizedEntity: "1036042917246", scope: "gcm"}, (token) ->
                     $localStorage.gcmToken = token
                     resolve($localStorage.gcmToken)
 
@@ -16,8 +15,8 @@ authentication = ($localStorage, $http, $rootScope, $q, $location, API_URL) ->
         $rootScope.profileId = data.profileId
         $rootScope.$emit('authenticated', data.xmppToken)
 
-    login:
-        $q(resolve, reject) ->
+    login: ->
+        $q (resolve, reject) ->
             unless $localStorage.authToken or ($localStorage.email and $localStorage.password)
                 reject('no login credentials')
                 return
@@ -37,7 +36,7 @@ authentication = ($localStorage, $http, $rootScope, $q, $location, API_URL) ->
                     
 
     signup: (email, password, dateOfBirth) ->
-        $q(resolve, reject) ->
+        $q (resolve, reject) ->
             getGCMToken.then (token) ->
                 $http.post API_URL + '/users',
                     birthday: Date.parse(dateOfBirth)
@@ -49,4 +48,4 @@ authentication = ($localStorage, $http, $rootScope, $q, $location, API_URL) ->
                 .error(reject)
                     
 
-fuckr.factory('authentication', ['$localStorage', '$http', '$rootScope', '$q', '$location', 'API_URL', authenticateFactory])
+fuckr.factory('authentication', ['$localStorage', '$http', '$rootScope', '$q', '$location', 'API_URL', authentication])
