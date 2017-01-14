@@ -101,6 +101,15 @@ cmToLocalUnit = ($localStorage) ->
         else
             "#{(cm / 100).toPrecision(3)}m"
 
+kmToLocalUnit = ($localStorage) ->
+    (km) ->
+        if !km
+            ''
+        else if $localStorage.localUnits == 'US'
+            (km*0.621371).toPrecision(3) + ' miles'
+        else
+            km.toPrecision(3) + 'km'
+
 managedFields = ($http) -> $http.get('https://primus.grindr.com/2.0/managedFields')
 
 lastTimeActive = ->
@@ -118,6 +127,7 @@ angular
     .module('profilesController', ['ngRoute', 'ngStorage', 'ngMap', 'profiles', 'pinpoint'])
     .filter('gramToLocalUnit', ['$localStorage', gramToLocalUnit])
     .filter('cmToLocalUnit', ['$localStorage', cmToLocalUnit])
+    .filter('kmToLocalUnit', ['$localStorage', kmToLocalUnit])
     .filter('lastTimeActive', lastTimeActive)
     .factory('managedFields', managedFields)
     .controller 'profilesController',

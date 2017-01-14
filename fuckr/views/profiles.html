@@ -99,7 +99,7 @@
     </table>
 
     <p ng-show="profile.distance">
-      <b> {{profile.distance.toPrecision(3)}} km away</b>
+      <b> {{profile.distance | kmToLocalUnit}} away</b>
       <i ng-show="isNearbyProfile(profile.profileId) && (!pinpointing)" class="fa fa-globe fa-2x" ng-click="pinpoint(profile.profileId)"></i>
       <img ng-show="pinpointing" src="img/spin.gif">
     </p>
