@@ -73,7 +73,7 @@ authenticateFactory = function($localStorage, $http, $rootScope, $q, $location) 
 angular.module('authenticate', ['ngStorage']).factory('authenticate', ['$localStorage', '$http', '$rootScope', '$q', '$location', authenticateFactory]);
 
 chat = function($http, $localStorage, $rootScope, $q, profiles, authenticate) {
-  var acknowledgeMessages, addMessage, client, createConversation, gui, jacasr, nwWindow, s4, sendMessage, uuid;
+  var acknowledgeMessages, addMessage, client, createConversation, gui, jacasr, lastConnection, nwWindow, s4, sendMessage, uuid;
   jacasr = require('jacasr');
   nwWindow = gui = require('nw.gui').Window.get();
   s4 = function() {
@@ -154,9 +154,9 @@ chat = function($http, $localStorage, $rootScope, $q, profiles, authenticate) {
       messageIds: messageIds
     });
   };
+  lastConnection = null;
   $rootScope.$on('authenticated', function(event, token) {
-    var lastConnection;
-    lastConnection = Date.now();
+    lastConnection || (lastConnection = Date.now());
     client = new jacasr.Client({
       login: $localStorage.profileId,
       password: token,

@@ -60,8 +60,9 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authenticate) ->
     acknowledgeMessages = (messageIds) ->
         $http.post('https://primus.grindr.com/2.0/confirmChatMessagesDelivered', {messageIds: messageIds})
     
+    lastConnection = null
     $rootScope.$on 'authenticated', (event, token) ->
-        lastConnection = Date.now()
+        lastConnection ||= Date.now()
         client = new jacasr.Client
             login: $localStorage.profileId
             password: token
