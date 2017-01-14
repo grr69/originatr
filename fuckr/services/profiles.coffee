@@ -4,8 +4,9 @@ profiles = ($http, $q, $rootScope) ->
 
     blocked = []
     $rootScope.$on 'authenticated', ->
-        $http.get('https://primus.grindr.com/2.0/blocks').then (response) ->
-            blocked = _.union(response.data.blockedBy, response.data.blocking)
+        if blocked.length == 0
+            $http.get('https://primus.grindr.com/2.0/blocks').then (response) ->
+                blocked = _.union(response.data.blockedBy, response.data.blocking)
 
     return {
         nearby: (params) ->

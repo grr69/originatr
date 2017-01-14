@@ -72,7 +72,7 @@ authenticateFactory = function($localStorage, $http, $rootScope, $q, $location) 
 
 angular.module('authenticate', ['ngStorage']).factory('authenticate', ['$localStorage', '$http', '$rootScope', '$q', '$location', authenticateFactory]);
 
-chat = function($http, $localStorage, $rootScope, $q, profiles) {
+chat = function($http, $localStorage, $rootScope, $q, profiles, authenticate) {
   var acknowledgeMessages, addMessage, client, createConversation, gui, jacasr, nwWindow, s4, sendMessage, uuid;
   jacasr = require('jacasr');
   nwWindow = gui = require('nw.gui').Window.get();
@@ -155,6 +155,8 @@ chat = function($http, $localStorage, $rootScope, $q, profiles) {
     });
   };
   $rootScope.$on('authenticated', function(event, token) {
+    var lastConnection;
+    lastConnection = Date.now();
     client = new jacasr.Client({
       login: $localStorage.profileId,
       password: token,
@@ -182,8 +184,16 @@ chat = function($http, $localStorage, $rootScope, $q, profiles) {
       return addMessage(message);
     });
     client.on('close', function() {
-      $rootScope.chatError = true;
-      return alert("XMPP chat error. If you're using public wifi, XMPP protocol is probably blocked.");
+      var now;
+      now = Date.now();
+      if ((now - lastConnection) < 60000) {
+        $rootScope.chatError = true;
+        return alert("XMPP chat error. If you're using public wifi, XMPP protocol is probably blocked.");
+      } else {
+        lastConnection = now;
+        client.disconnect();
+        return authenticate();
+      }
     });
     window.onbeforeunload = function() {
       return client.disconnect();
@@ -252,7 +262,7 @@ chat = function($http, $localStorage, $rootScope, $q, profiles) {
   };
 };
 
-angular.module('chat', ['ngStorage', 'profiles']).factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', chat]);
+angular.module('chat', ['ngStorage', 'profiles']).factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', 'authenticate', chat]);
 
 pinpoint = function($q, $localStorage, profiles) {
   var getNearbyProfiles, randomizedLocation, trilaterate;
@@ -363,9 +373,11 @@ profiles = function($http, $q, $rootScope) {
   profileCache = {};
   blocked = [];
   $rootScope.$on('authenticated', function() {
-    return $http.get('https://primus.grindr.com/2.0/blocks').then(function(response) {
-      return blocked = _.union(response.data.blockedBy, response.data.blocking);
-    });
+    if (blocked.length === 0) {
+      return $http.get('https://primus.grindr.com/2.0/blocks').then(function(response) {
+        return blocked = _.union(response.data.blockedBy, response.data.blocking);
+      });
+    }
   });
   return {
     nearby: function(params) {
@@ -422,14 +434,20 @@ profiles = function($http, $q, $rootScope) {
 angular.module('profiles', []).factory('profiles', ['$http', '$q', '$rootScope', profiles]);
 
 updateLocation = function($rootScope, $http, $localStorage, $interval) {
+  var firstTime, updateLocationFunction;
+  updateLocationFunction = function() {
+    return $http.put('https://primus.grindr.com/2.0/location', {
+      lat: $localStorage.grindrParams.lat,
+      lon: $localStorage.grindrParams.lon,
+      profileId: $localStorage.profileId
+    });
+  };
+  firstTime = true;
   return $rootScope.$on('authenticated', function() {
-    return $interval(function() {
-      return $http.put('https://primus.grindr.com/2.0/location', {
-        lat: $localStorage.grindrParams.lat,
-        lon: $localStorage.grindrParams.lon,
-        profileId: $localStorage.profileId
-      });
-    }, 90000);
+    if (firstTime) {
+      $interval(updateLocationFunction, 90000);
+    }
+    return firstTime = false;
   });
 };
 
@@ -495,6 +513,7 @@ chatController = function($scope, $routeParams, chat, uploadImage) {
         $scope.conversation.unread = false;
       }
     }
+    debugger;
     return $scope.lastestConversations = chat.lastestConversations();
   });
   $scope.sendText = function() {
@@ -921,6 +940,9 @@ if (typeof process !== 'undefined' && process.versions['node-webkit']) {
         return {
           responseError: function(response) {
             var message;
+            if (response.status === -1) {
+              return;
+            }
             message = (function() {
               switch (false) {
                 case response.status !== 0:
@@ -974,7 +996,9 @@ if (typeof process !== 'undefined' && process.versions['node-webkit']) {
         alert('No Internet connection');
       }
       return window.addEventListener('online', function() {
-        return window.location.reload('/');
+        return authenticate().then(function() {
+          return $rootScope.connectionError = false;
+        });
       });
     }
   ]);

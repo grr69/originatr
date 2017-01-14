@@ -5,7 +5,7 @@
 #   - get messages sent while you were offline (/undeliveredChatMessages)
 #   - confirm receiption (/confirmChatMessagesDelivered)
 #   - notify Grindr you blocked someone (managed by profiles controller)
-chat = ($http, $localStorage, $rootScope, $q, profiles) ->
+chat = ($http, $localStorage, $rootScope, $q, profiles, authenticate) ->
     jacasr = require('jacasr')
     nwWindow = gui = require('nw.gui').Window.get()
 
@@ -61,6 +61,7 @@ chat = ($http, $localStorage, $rootScope, $q, profiles) ->
         $http.post('https://primus.grindr.com/2.0/confirmChatMessagesDelivered', {messageIds: messageIds})
     
     $rootScope.$on 'authenticated', (event, token) ->
+        lastConnection = Date.now()
         client = new jacasr.Client
             login: $localStorage.profileId
             password: token
@@ -81,8 +82,14 @@ chat = ($http, $localStorage, $rootScope, $q, profiles) ->
             addMessage(message)
 
         client.on 'close', ->
-            $rootScope.chatError = true
-            alert("XMPP chat error. If you're using public wifi, XMPP protocol is probably blocked.")
+            now = Date.now()
+            if (now - lastConnection) < 60000
+                $rootScope.chatError = true
+                alert("XMPP chat error. If you're using public wifi, XMPP protocol is probably blocked.")
+            else
+                lastConnection = now
+                client.disconnect()
+                authenticate()
 
         window.onbeforeunload = ->
           client.disconnect()
@@ -135,4 +142,4 @@ chat = ($http, $localStorage, $rootScope, $q, profiles) ->
 
 angular
     .module('chat', ['ngStorage', 'profiles'])
-    .factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', chat])
+    .factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', 'authenticate', chat])
