@@ -115,7 +115,7 @@ managedFields = ($http) -> $http.get('https://primus.grindr.com/2.0/managedField
 lastTimeActive = ->
     (timestamp) ->
         minutes = Math.floor((new Date() - timestamp) / 60000)
-        hours = Math.floor(minutes / 24)
+        hours = Math.floor(minutes / 60)
         if minutes <= 5 then "Active Now"
         else if minutes < 60 then "Active #{minutes} mins ago"
         else if hours == 1 then "Active 1 hour ago"

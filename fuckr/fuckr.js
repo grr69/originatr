@@ -770,7 +770,7 @@ lastTimeActive = function() {
   return function(timestamp) {
     var hours, minutes;
     minutes = Math.floor((new Date() - timestamp) / 60000);
-    hours = Math.floor(minutes / 24);
+    hours = Math.floor(minutes / 60);
     if (minutes <= 5) {
       return "Active Now";
     } else if (minutes < 60) {
