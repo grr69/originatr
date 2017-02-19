@@ -936,12 +936,13 @@ fuckr.directive('fileModel', [
         model = $parse(attrs.fileModel);
         modelSetter = model.assign;
         return element.bind('change', function() {
-          scope.$apply(function() {});
-          if (element[0].files.length > 1) {
-            return modelSetter(scope, element[0].files);
-          } else {
-            return modelSetter(scope, element[0].files[0]);
-          }
+          return scope.$apply(function() {
+            if (element[0].files.length > 1) {
+              return modelSetter(scope, element[0].files);
+            } else {
+              return modelSetter(scope, element[0].files[0]);
+            }
+          });
         });
       }
     };

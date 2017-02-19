@@ -22,10 +22,10 @@ fuckr.directive 'fileModel', ['$parse', ($parse) ->
         modelSetter = model.assign
         element.bind 'change', ->
             scope.$apply ->
-            if element[0].files.length > 1
-                modelSetter scope, element[0].files
-            else
-                modelSetter scope, element[0].files[0]
+                if element[0].files.length > 1
+                    modelSetter scope, element[0].files
+                else
+                    modelSetter scope, element[0].files[0]
 ]
 
 if typeof process != 'undefined' and process.versions['node-webkit']
