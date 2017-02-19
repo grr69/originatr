@@ -55,7 +55,7 @@ pinpoint = ($q, $localStorage, profiles) ->
                 for i in [0..2]
                     profile = _.findWhere(results[i], {profileId: id})
                     return deferred.reject() unless profile
-                    beacons[i].dist = profile.distance
+                    beacons[i].dist = profile.distance / 1000
                 deferred.resolve(trilaterate(beacons))
             deferred.promise
 
@@ -67,7 +67,7 @@ pinpoint = ($q, $localStorage, profiles) ->
                 for i in [0..2]
                     for profile in results[i] when profile.distance
                         idToDistances[profile.profileId] ||= []
-                        idToDistances[profile.profileId].push(profile.distance)
+                        idToDistances[profile.profileId].push(profile.distance / 1000)
 
                 idToLocation = {}
                 for id, distances of idToDistances when distances.length == 3

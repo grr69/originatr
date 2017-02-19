@@ -398,7 +398,7 @@ pinpoint = function($q, $localStorage, profiles) {
           if (!profile) {
             return deferred.reject();
           }
-          beacons[i].dist = profile.distance;
+          beacons[i].dist = profile.distance / 1000;
         }
         return deferred.resolve(trilaterate(beacons));
       });
@@ -419,7 +419,7 @@ pinpoint = function($q, $localStorage, profiles) {
               continue;
             }
             idToDistances[name1 = profile.profileId] || (idToDistances[name1] = []);
-            idToDistances[profile.profileId].push(profile.distance);
+            idToDistances[profile.profileId].push(profile.distance / 1000);
           }
         }
         idToLocation = {};
