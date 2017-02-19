@@ -173,7 +173,6 @@ chat = function($http, $localStorage, $rootScope, $q, profiles, authentication, 
     });
   };
   addMessage = function(message) {
-    debugger;
     var fromMe, id, timestamp;
     if (parseInt(message.sourceProfileId) === $localStorage.profileId) {
       fromMe = true;
@@ -481,7 +480,7 @@ profiles = function($http, $localStorage, $q, $rootScope, API_URL) {
       return blocked.push(id);
     },
     block: function(id) {
-      return $http.post(API_URL + "blocks/" + id).then((function(_this) {
+      return $http.post(API_URL + "me/blocks/" + id).then((function(_this) {
         return function() {
           return _this.blockedBy(id);
         };
@@ -685,8 +684,8 @@ loginController = function($scope, $location, $localStorage, authentication) {
 fuckr.controller('loginController', ['$scope', '$location', '$localStorage', 'authentication', loginController]);
 
 profilesController = function($scope, $interval, $localStorage, $routeParams, $window, $injector, profiles, pinpoint) {
-  var autocomplete;
-  $scope.$storage = $localStorage.$default({
+  var autocomplete, defaultStorage;
+  defaultStorage = {
     location: {
       name: 'San Francisco, CA',
       lat: 37.7833,
@@ -695,8 +694,10 @@ profilesController = function($scope, $interval, $localStorage, $routeParams, $w
     },
     filters: {
       photoOnly: true
-    }
-  });
+    },
+    fuckrVersion: 2.0
+  };
+  $scope.$storage = $localStorage.$default(defaultStorage);
   $scope.refresh = function() {
     var filters;
     filters = $scope.$storage.filters;

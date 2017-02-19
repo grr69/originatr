@@ -27,7 +27,7 @@ profiles = ($http, $localStorage, $q, $rootScope, API_URL) ->
             blocked.push(id)
 
         block: (id) ->
-            $http.post("#{API_URL}blocks/#{id}").then => @blockedBy(id)
+            $http.post("#{API_URL}me/blocks/#{id}").then => @blockedBy(id)
 
         isBlocked: (id) -> _.contains(blocked, id)
     }

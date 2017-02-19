@@ -8,7 +8,7 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, $
             geohash: '9q8yyq4zsjse'
         filters:
             photoOnly: true
-        fuckrVersion: 2.0.0
+        fuckrVersion: 2.0
     $scope.$storage = $localStorage.$default(defaultStorage)
     #unless $scope.$storage.fuckrVersion
     #    $scope.$storage = _.extend(defaultStorage, conversations: $scope.$storage.conversations)
