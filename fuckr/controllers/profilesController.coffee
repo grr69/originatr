@@ -79,7 +79,7 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, $
             profile.profileId isnt $scope.profile.profileId
         delete $scope.profile
 
-    £managedFields.then (response) -> $scope.managedFields = response.data.fields
+    #managedFields.then (response) -> $scope.managedFields = response.data.fields
     #only included in v3 managed-fields
     $scope.sexualPositions = ['', 'Top', 'Bottom', 'Versatile', 'Vers Bottom', 'Vers Top', 'Oral Only']
 
@@ -104,12 +104,12 @@ cmToLocalUnit = ($localStorage) ->
 
 mToLocalUnit = ($localStorage) ->
     (m) ->
-        if !km
+        if !m
             ''
         else if $localStorage.localUnits == 'US'
             (m*0.000621371).toPrecision(3) + ' miles'
         else
-            m.toPrecision(3) + 'km'
+            (m/1000).toPrecision(3) + 'km'
 
 lastTimeActive = ->
     (timestamp) ->

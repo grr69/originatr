@@ -25,22 +25,6 @@ fuckr.config ['$httpProvider', '$routeProvider', '$compileProvider', ($httpProvi
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|file|mailto|chrome-extension):/)
 ]
 
-    fuckr.run ['$location', '$injector', '$rootScope', 'authenticate', ($location, $injector, $rootScope, authenticate) ->
-        $rootScope.runningNodeWebkit = true
-        if navigator.onLine
-            #ugly: loading every factory with 'authenticated' event listener
-            $injector.get(factory) for factory in ['profiles', 'chat', 'updateLocation']
-            authenticate().then(
-                -> $location.path('/profiles/')
-                -> $location.path('/login')
-            )
-            window.addEventListener 'offline', -> $rootScope.connectionError = true
-        else
-            alert('No Internet connection')
-        window.addEventListener 'online', ->
-            authenticate().then -> $rootScope.connectionError = false
-    ]
-
 fuckr.run ['$location', '$injector', '$rootScope', 'authentication', ($location, $injector, $rootScope, authentication) ->
     $rootScope.runningNodeWebkit = true
     if navigator.onLine
@@ -54,6 +38,6 @@ fuckr.run ['$location', '$injector', '$rootScope', 'authentication', ($location,
     else
         alert('No Internet connection')
     window.addEventListener 'online', ->
-        authenticate().then ->
+        authentication.login().then ->
             $rootScope.connectionError = false
 ]

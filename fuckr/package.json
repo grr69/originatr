@@ -1,10 +1,6 @@
 {
   "name": "Fuckr",
-<<<<<<< HEAD
   "version": "2.0.0-alpha",
-=======
-  "version": "1.8.1",
->>>>>>> master
   "main": "index.html",
   "window": {
     "title": "Fuckr",
@@ -21,11 +17,7 @@
     "build": "cat fuckr.coffee services/*.coffee controllers/*.coffee directives.coffee | coffee -cbs > fuckr.js",
     "run": "npm run build && nw ."
   },
-<<<<<<< HEAD
   "chromium-args": "--ignore-certificate-errors --disable-setuid-sandbox --enable-gcm",
-=======
-  "chromium-args": "--ignore-certificate-errors --disable-setuid-sandbox",
->>>>>>> master
   "user-agent": "grindr3/3.0.1.4529;4529;Unknown;Android 4.4.4",
   "no-edit-menu": false
 }

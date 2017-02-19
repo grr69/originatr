@@ -5,7 +5,7 @@
 #   - get messages sent while you were offline (/undeliveredChatMessages)
 #   - confirm receiption (/confirmChatMessagesDelivered)
 #   - notify Grindr you blocked someone (managed by profiles controller)
-chat = ($http, $localStorage, $rootScope, $q, profiles, authenticate, API_URL) ->
+chat = ($http, $localStorage, $rootScope, $q, profiles, authentication, API_URL) ->
     jacasr = require('jacasr')
     nwWindow = gui = require('nw.gui').Window.get()
 
@@ -90,7 +90,7 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authenticate, API_URL) -
             else
                 lastConnection = now
                 client.disconnect()
-                authenticate()
+                authentication.login()
 
         window.onbeforeunload = ->
           client.disconnect()
@@ -141,4 +141,4 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authenticate, API_URL) -
     }
 
 
-fuckr.factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', 'authenticate', 'API_URL', chat])
+fuckr.factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', 'authentication', 'API_URL', chat])
