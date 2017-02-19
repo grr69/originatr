@@ -1,5 +1,5 @@
 #gets, caches and blocks profiles
-profiles = ($http, $q, $rootScope, API_URL) ->
+profiles = ($http, $localStorage, $q, $rootScope, API_URL) ->
     blocked = []
     $rootScope.$on 'authenticated', ->
         $http.get(API_URL + 'me/blocks').then (response) ->
@@ -9,7 +9,9 @@ profiles = ($http, $q, $rootScope, API_URL) ->
         nearby: (location) ->
             deferred = $q.defer()
             geohash = Geohash.encode(location.lat, location.lon, 12)
-            $http.get("#{API_URL}locations/#{geohash}/profiles/").then (response) ->
+            filterParams = _.map $localStorage.filters, (value, key) ->
+                "#{key}=#{encodeURIComponent(value)}" if value
+            $http.get("#{API_URL}locations/#{geohash}/profiles/?#{_.compact(filterParams).join('&')}").then (response) ->
                 profiles = _.reject response.data.profiles, (profile) ->
                     _.contains(blocked, profile.profileId)
                 deferred.resolve(profiles)
@@ -32,5 +34,5 @@ profiles = ($http, $q, $rootScope, API_URL) ->
 
 
 
-fuckr.factory('profiles', ['$http', '$q', '$rootScope', 'API_URL', profiles])
+fuckr.factory('profiles', ['$http', '$localStorage', '$q', '$rootScope', 'API_URL', profiles])
     

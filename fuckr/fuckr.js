@@ -173,6 +173,7 @@ chat = function($http, $localStorage, $rootScope, $q, profiles, authentication, 
     });
   };
   addMessage = function(message) {
+    debugger;
     var fromMe, id, timestamp;
     if (parseInt(message.sourceProfileId) === $localStorage.profileId) {
       fromMe = true;
@@ -326,8 +327,8 @@ chat = function($http, $localStorage, $rootScope, $q, profiles, authentication, 
     sendLocation: function(to) {
       var messageBody;
       messageBody = angular.toJson({
-        lat: $localStorage.grindrParams.lat,
-        lon: $localStorage.grindrParams.lon
+        lat: $localStorage.location.lat,
+        lon: $localStorage.location.lon
       });
       return sendMessage('map', messageBody, to);
     },
@@ -442,7 +443,7 @@ pinpoint = function($q, $localStorage, profiles) {
 
 fuckr.factory('pinpoint', ['$q', '$localStorage', 'profiles', pinpoint]);
 
-profiles = function($http, $q, $rootScope, API_URL) {
+profiles = function($http, $localStorage, $q, $rootScope, API_URL) {
   var blocked;
   blocked = [];
   $rootScope.$on('authenticated', function() {
@@ -452,10 +453,15 @@ profiles = function($http, $q, $rootScope, API_URL) {
   });
   return {
     nearby: function(location) {
-      var deferred, geohash;
+      var deferred, filterParams, geohash;
       deferred = $q.defer();
       geohash = Geohash.encode(location.lat, location.lon, 12);
-      $http.get(API_URL + "locations/" + geohash + "/profiles/").then(function(response) {
+      filterParams = _.map($localStorage.filters, function(value, key) {
+        if (value) {
+          return key + "=" + (encodeURIComponent(value));
+        }
+      });
+      $http.get(API_URL + "locations/" + geohash + "/profiles/?" + (_.compact(filterParams).join('&'))).then(function(response) {
         profiles = _.reject(response.data.profiles, function(profile) {
           return _.contains(blocked, profile.profileId);
         });
@@ -487,7 +493,7 @@ profiles = function($http, $q, $rootScope, API_URL) {
   };
 };
 
-fuckr.factory('profiles', ['$http', '$q', '$rootScope', 'API_URL', profiles]);
+fuckr.factory('profiles', ['$http', '$localStorage', '$q', '$rootScope', 'API_URL', profiles]);
 
 fuckr.factory('uploadImage', [
   '$http', '$q', function($http, $q) {
@@ -684,27 +690,16 @@ profilesController = function($scope, $interval, $localStorage, $routeParams, $w
     location: {
       name: 'San Francisco, CA',
       lat: 37.7833,
-      lon: -122.4167
+      lon: -122.4167,
+      geohash: '9q8yyq4zsjse'
+    },
+    filters: {
+      photoOnly: true
     }
-
-    /*
-        geohash: '9q8yyq4zsjse'
-    filter:
-        ageMinimum: null
-        ageMaximum: null
-        photoOnly: true
-        online: false
-     */
   });
   $scope.refresh = function() {
-    var filter;
-    filter = $scope.$storage.grindrParams.filter;
-    if (!filter.ageMinimum) {
-      delete filter.ageMinimum;
-    }
-    if (!filter.ageMaximum) {
-      delete filter.ageMaximum;
-    }
+    var filters;
+    filters = $scope.$storage.filters;
     if ($scope.view === 'thumbnails') {
       return profiles.nearby($scope.$storage.location).then(function(profiles) {
         return $scope.nearbyProfiles = profiles;
@@ -717,11 +712,11 @@ profilesController = function($scope, $interval, $localStorage, $routeParams, $w
   };
   $scope.changeFilter = function(filterName) {
     var filterValue;
-    filterValue = $scope.$storage.filter[filterName];
+    filterValue = $scope.$storage.filters[filterName];
     if (filterValue) {
-      $scope.$storage.grindrParams.filter[filterName + "Ids"] = [filterValue];
+      $scope.$storage.filters[filterName + "Ids"] = [filterValue];
     } else {
-      delete $scope.$storage.grindrParams.filter[filterName + "Ids"];
+      delete $scope.$storage.filters[filterName + "Ids"];
     }
     return $scope.refresh();
   };

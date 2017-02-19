@@ -130,8 +130,8 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authentication, API_URL)
 
         sendLocation: (to) ->
             messageBody = angular.toJson
-                lat: $localStorage.grindrParams.lat
-                lon: $localStorage.grindrParams.lon
+                lat: $localStorage.location.lat
+                lon: $localStorage.location.lon
             sendMessage('map', messageBody, to)
 
         block: (id) ->

@@ -1,24 +1,20 @@
 profilesController = ($scope, $interval, $localStorage, $routeParams, $window, $injector, profiles, pinpoint) ->
     #left part: filter form and thumbnails
-    $scope.$storage = $localStorage.$default
+    defaultStorage =
         location:
             name: 'San Francisco, CA'
             lat: 37.7833
             lon: -122.4167
-        ###
             geohash: '9q8yyq4zsjse'
-        filter:
-            ageMinimum: null
-            ageMaximum: null
+        filters:
             photoOnly: true
-            online: false
-        ###
+        fuckrVersion: 2.0.0
+    $scope.$storage = $localStorage.$default(defaultStorage)
+    #unless $scope.$storage.fuckrVersion
+    #    $scope.$storage = _.extend(defaultStorage, conversations: $scope.$storage.conversations)
 
     $scope.refresh = ->
-        #suppress keys if null or empty
-        filter = $scope.$storage.grindrParams.filter
-        delete filter.ageMinimum unless filter.ageMinimum
-        delete filter.ageMaximum unless filter.ageMaximum
+        filters = $scope.$storage.filters
 
         if $scope.view == 'thumbnails'
             profiles.nearby($scope.$storage.location).then (profiles) ->
@@ -28,11 +24,11 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, $
                 $scope.locations = locations
 
     $scope.changeFilter = (filterName) ->
-        filterValue = $scope.$storage.filter[filterName]
+        filterValue = $scope.$storage.filters[filterName]
         if filterValue
-            $scope.$storage.grindrParams.filter["#{filterName}Ids"] = [filterValue]
+            $scope.$storage.filters["#{filterName}Ids"] = [filterValue]
         else
-            delete $scope.$storage.grindrParams.filter["#{filterName}Ids"]
+            delete $scope.$storage.filters["#{filterName}Ids"]
         $scope.refresh()
 
     $scope.$watch 'view', (view) ->

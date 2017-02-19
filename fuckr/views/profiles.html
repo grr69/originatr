@@ -5,18 +5,17 @@
       <fieldset>
         In
         <input ng-model="$storage.location.name" class="pure-input-1-3 pure-input-rounded" id="location" type="text" placeholder="Location">
-        <!--
         Between
-        <input class="small-input" ng-model="$storage.grindrParams.filter.ageMinimum" ng-change="refresh()" min="18" max="99" size="2" type="number">
+        <input class="small-input" ng-model="$storage.filters.ageMinimum" ng-change="refresh()" min="18" max="99" size="2" type="number">
         And
-        <input ng-model="$storage.grindrParams.filter.ageMaximum" ng-change="refresh()"
+        <input ng-model="$storage.filters.ageMaximum" ng-change="refresh()"
                class="small-input" min="18" max="99" size="2" type="number">
       </fieldset>
       <fieldset>
         Online
-        <input type="checkbox" ng-model="$storage.grindrParams.filter.onlineOnly" ng-change="refresh()">
+        <input type="checkbox" ng-model="$storage.filters.onlineOnly" ng-change="refresh()">
         Photo only
-        <input type="checkbox" ng-model="$storage.grindrParams.filter.photoOnly" ng-change="refresh()">
+        <input type="checkbox" ng-model="$storage.filters.photoOnly" ng-change="refresh()">
         View as
         <select ng-model='view' ng-change=refresh()>
           <option value="thumbnails">Thumbnails</option>
@@ -36,7 +35,6 @@
         <select ng-model='$storage.filter.bodyType' ng-options="option.fieldId as option.name for option in managedFields.bodyType" ng-change="changeFilter('bodyType')">
           <option value="">Any Body Type</option>
         </select>
--->
       </fieldset>
     </form>
   </div>
