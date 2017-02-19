@@ -14,6 +14,7 @@ authentication = ($localStorage, $http, $rootScope, $q, $location, API_URL) ->
         $http.defaults.headers.common['Authorization'] = "Grindr3 #{data.sessionId}"
         $rootScope.profileId = data.profileId
         $rootScope.$emit('authenticated', data.xmppToken)
+        $rootScope.authenticated = true
 
     login: ->
         $q (resolve, reject) ->
@@ -37,8 +38,8 @@ authentication = ($localStorage, $http, $rootScope, $q, $location, API_URL) ->
 
     signup: (email, password, dateOfBirth) ->
         $q (resolve, reject) ->
-            getGCMToken.then (token) ->
-                $http.post API_URL + '/users',
+            getGCMToken().then (token) ->
+                $http.post API_URL + 'users',
                     birthday: Date.parse(dateOfBirth)
                     email: email
                     password: password

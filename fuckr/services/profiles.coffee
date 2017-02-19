@@ -11,8 +11,8 @@ profiles = ($http, $q, $rootScope, API_URL) ->
         nearby: (location) ->
             deferred = $q.defer()
             geohash = Geohash.encode(location.lat, location.lon, 12)
-            $http.get("#{API_URL}locations/#{geohash}/profiles/online=true").then (response) ->
-                profiles = _.reject response.profiles, (profile) ->
+            $http.get("#{API_URL}locations/#{geohash}/profiles/?online=true").then (response) ->
+                profiles = _.reject response.data.profiles, (profile) ->
                     _.contains(blocked, profile.profileId)
 
                 for profile in profiles when not profileCache[profile.profileId]
@@ -26,7 +26,7 @@ profiles = ($http, $q, $rootScope, API_URL) ->
             else
                 deferred = $q.defer()
                 $http.post(API_URL + 'profiles', {targetProfileIds: [id]}).then (response) ->
-                    deferred.resolve(response.profiles[0])
+                    deferred.resolve(response.data.profiles[0])
                 deferred.promise
 
         blockedBy: (id) ->
