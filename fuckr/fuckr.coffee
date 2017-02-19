@@ -6,6 +6,7 @@ fuckr.config ['$httpProvider', '$routeProvider', '$compileProvider', ($httpProvi
     $httpProvider.defaults.headers.common.Accept = '*/*' #avoids 406 error
     $httpProvider.interceptors.push ($rootScope) ->
         responseError: (response) ->
+            return if response.status == -1
             message = switch
                 when response.status == 0 then "Can't reach Grindr servers."
                 when response.status >= 500 then "Grindr servers temporarily unavailable (HTTP #{response.status})"
@@ -24,6 +25,21 @@ fuckr.config ['$httpProvider', '$routeProvider', '$compileProvider', ($httpProvi
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|file|mailto|chrome-extension):/)
 ]
 
+    fuckr.run ['$location', '$injector', '$rootScope', 'authenticate', ($location, $injector, $rootScope, authenticate) ->
+        $rootScope.runningNodeWebkit = true
+        if navigator.onLine
+            #ugly: loading every factory with 'authenticated' event listener
+            $injector.get(factory) for factory in ['profiles', 'chat', 'updateLocation']
+            authenticate().then(
+                -> $location.path('/profiles/')
+                -> $location.path('/login')
+            )
+            window.addEventListener 'offline', -> $rootScope.connectionError = true
+        else
+            alert('No Internet connection')
+        window.addEventListener 'online', ->
+            authenticate().then -> $rootScope.connectionError = false
+    ]
 
 fuckr.run ['$location', '$injector', '$rootScope', 'authentication', ($location, $injector, $rootScope, authentication) ->
     $rootScope.runningNodeWebkit = true
@@ -37,13 +53,7 @@ fuckr.run ['$location', '$injector', '$rootScope', 'authentication', ($location,
         window.addEventListener 'offline', -> $rootScope.connectionError = true
     else
         alert('No Internet connection')
-    window.addEventListener 'online', -> window.location.reload('/')
+    window.addEventListener 'online', ->
+        authenticate().then ->
+            $rootScope.connectionError = false
 ]
-
-#copy-paste/emoji for nw 0.12 on Mac
-if process.versions['node-webkit'] < '0.13' and process.platform == 'darwin'
-    gui = require('nw.gui')
-    nativeMenuBar = new gui.Menu({ type: "menubar" })
-    nativeMenuBar.createMacBuiltin "Fuckr"
-    gui.Window.get().menu = nativeMenuBar
-

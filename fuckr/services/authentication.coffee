@@ -1,7 +1,7 @@
 authentication = ($localStorage, $http, $rootScope, $q, $location, API_URL) ->
     getGCMToken = ->
         $q (resolve, reject) ->
-            if false and $localStorage.gcmToken
+            if $localStorage.gcmToken
                 resolve($localStorage.gcmToken)
             else
                 chrome.instanceID.getToken {authorizedEntity: "1036042917246", scope: "gcm"}, (token) ->

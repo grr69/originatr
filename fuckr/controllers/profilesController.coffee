@@ -79,7 +79,9 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, $
             profile.profileId isnt $scope.profile.profileId
         delete $scope.profile
 
-    #managedFields.then (response) -> $scope.managedFields = response.data.fields
+    £managedFields.then (response) -> $scope.managedFields = response.data.fields
+    #only included in v3 managed-fields
+    $scope.sexualPositions = ['', 'Top', 'Bottom', 'Versatile', 'Vers Bottom', 'Vers Top', 'Oral Only']
 
 gramToLocalUnit = ($localStorage) ->
     (grams) ->
@@ -100,12 +102,19 @@ cmToLocalUnit = ($localStorage) ->
         else
             "#{(cm / 100).toPrecision(3)}m"
 
-#managedFields = ($http) -> $http.get('https://primus.grindr.com/2.0/managedFields')
+mToLocalUnit = ($localStorage) ->
+    (m) ->
+        if !km
+            ''
+        else if $localStorage.localUnits == 'US'
+            (m*0.000621371).toPrecision(3) + ' miles'
+        else
+            m.toPrecision(3) + 'km'
 
 lastTimeActive = ->
     (timestamp) ->
         minutes = Math.floor((new Date() - timestamp) / 60000)
-        hours = Math.floor(minutes / 24)
+        hours = Math.floor(minutes / 60)
         if minutes <= 5 then "Active Now"
         else if minutes < 60 then "Active #{minutes} mins ago"
         else if hours == 1 then "Active 1 hour ago"
@@ -116,6 +125,7 @@ lastTimeActive = ->
 fuckr
     .filter('gramToLocalUnit', ['$localStorage', gramToLocalUnit])
     .filter('cmToLocalUnit', ['$localStorage', cmToLocalUnit])
+    .filter('mToLocalUnit', ['$localStorage', mToLocalUnit])
     .filter('lastTimeActive', lastTimeActive)
     #.factory('managedFields', managedFields)
     .controller 'profilesController',

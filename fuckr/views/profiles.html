@@ -73,7 +73,7 @@
 
     <p class="icons" ng-show="profile.socialNetworks">
       <a ng-repeat="(name, info) in profile.socialNetworks" target="_blank" href="https://{{name}}.com/{{info.userId}}/">
-        <i class="icon-{{name}}"></i>
+        <i class="fa fa-{{name}}"></i>
       </a>
     </p>
 
@@ -81,12 +81,13 @@
 
     <p>{{profile.seen | lastTimeActive}}</p>
 
-    <table ng-show="profile.height || profile.weight || profile.age" class="pure-table">
+    <table ng-show="profile.height || profile.weight || profile.age || profile.sexualPosition" class="pure-table">
       <thead>
         <tr>
           <th>Age</th>
           <th>Height</th>
           <th>Weight</th>
+          <th>Position</th>
         </tr>
       </thead>
       <tbody>
@@ -94,12 +95,13 @@
           <td>{{profile.age}}</td>
           <td>{{profile.height | cmToLocalUnit}}</td>
           <td>{{profile.weight | gramToLocalUnit}}</td>
+          <td>{{sexualPositions[profile.sexualPosition]}}
         </tr>
       </tbody>
     </table>
 
     <p ng-show="profile.distance">
-      <b> {{profile.distance.toPrecision(3)}} km away</b>
+      <b> {{profile.distance | mToLocalUnit}} away</b>
       <i ng-show="isNearbyProfile(profile.profileId) && (!pinpointing)" class="fa fa-globe fa-2x" ng-click="pinpoint(profile.profileId)"></i>
       <img ng-show="pinpointing" src="img/spin.gif">
     </p>

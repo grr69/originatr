@@ -30,6 +30,7 @@ function runNwBuilder() {
     appVersion: VERSION,
     winIco: /^win/.test(process.platform) ? 'icons/win.ico' : null,
     macIcns: 'icons/mac.icns',
+    flavor: 'normal',
     zip: false
   });
   nw.on('log', console.log.bind(console));

@@ -5,7 +5,7 @@
 #   - get messages sent while you were offline (/undeliveredChatMessages)
 #   - confirm receiption (/confirmChatMessagesDelivered)
 #   - notify Grindr you blocked someone (managed by profiles controller)
-chat = ($http, $localStorage, $rootScope, $q, profiles, API_URL) ->
+chat = ($http, $localStorage, $rootScope, $q, profiles, authenticate, API_URL) ->
     jacasr = require('jacasr')
     nwWindow = gui = require('nw.gui').Window.get()
 
@@ -60,7 +60,9 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, API_URL) ->
     acknowledgeMessages = (messageIds) ->
         $http.put(API_URL + 'me/chat/messages?confirmed=true', {messageIds: messageIds})
     
+    lastConnection = null
     $rootScope.$on 'authenticated', (event, token) ->
+        lastConnection ||= Date.now()
         client = new jacasr.Client
             login: $localStorage.profileId
             password: token
@@ -81,8 +83,14 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, API_URL) ->
             addMessage(message)
 
         client.on 'close', ->
-            $rootScope.chatError = true
-            alert("XMPP chat error. If you're using public wifi, XMPP protocol is probably blocked.")
+            now = Date.now()
+            if (now - lastConnection) < 60000
+                $rootScope.chatError = true
+                alert("XMPP chat error. If you're using public wifi, XMPP protocol is probably blocked.")
+            else
+                lastConnection = now
+                client.disconnect()
+                authenticate()
 
         window.onbeforeunload = ->
           client.disconnect()
@@ -133,4 +141,4 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, API_URL) ->
     }
 
 
-fuckr.factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', 'API_URL', chat])
+fuckr.factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', 'authenticate', 'API_URL', chat])
