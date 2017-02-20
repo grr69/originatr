@@ -5,10 +5,10 @@
 #   - get messages sent while you were offline (/undeliveredChatMessages)
 #   - confirm receiption (/confirmChatMessagesDelivered)
 #   - notify Grindr you blocked someone (managed by profiles controller)
-chat = ($http, $localStorage, $rootScope, $q, profiles, authentication, API_URL) ->
-    jacasr = require('jacasr')
-    nwWindow = gui = require('nw.gui').Window.get()
+jacasr = require('jacasr')
+nwWindow = gui = require('nw.gui').Window.get()
 
+chat = ($http, $localStorage, $rootScope, $q, profiles, authentication, API_URL) ->
     s4 = -> Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
     uuid = -> "#{s4()}#{s4()}-#{s4()}-#{s4()}-#{s4()}-#{s4()}#{s4()}#{s4()}".toUpperCase()
 
@@ -63,6 +63,7 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authentication, API_URL)
     lastConnection = null
     $rootScope.$on 'authenticated', (event, token) ->
         lastConnection ||= Date.now()
+        loggingOut = false
         client = new jacasr.Client
             login: $localStorage.profileId
             password: token
@@ -84,6 +85,7 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authentication, API_URL)
 
         client.on 'close', ->
             now = Date.now()
+            return if loggingOut
             if (now - lastConnection) < 60000
                 $rootScope.chatError = true
                 alert("XMPP chat error. If you're using public wifi, XMPP protocol is probably blocked.")
@@ -91,6 +93,10 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authentication, API_URL)
                 lastConnection = now
                 client.disconnect()
                 authentication.login()
+
+        $rootScope.$on 'logout', ->
+            loggingOut = true
+            client.disconnect()
 
         window.onbeforeunload = ->
           client.disconnect()

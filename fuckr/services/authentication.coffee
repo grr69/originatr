@@ -1,4 +1,4 @@
-authentication = ($localStorage, $http, $rootScope, $q, $location, API_URL) ->
+authentication = ($localStorage, $http, $rootScope, $q, $location, $timeout, API_URL) ->
     getGCMToken = ->
         $q (resolve, reject) ->
             if $localStorage.gcmToken
@@ -16,6 +16,10 @@ authentication = ($localStorage, $http, $rootScope, $q, $location, API_URL) ->
         $rootScope.$emit('authenticated', data.xmppToken)
         $rootScope.authenticated = true
 
+    $rootScope.$on 'logout', ->
+        $localStorage.authToken = null
+        $location.path('/login')
+
     login: ->
         $q (resolve, reject) ->
             unless $localStorage.authToken or ($localStorage.email and $localStorage.password)
@@ -24,16 +28,18 @@ authentication = ($localStorage, $http, $rootScope, $q, $location, API_URL) ->
             getGCMToken().then (token) ->
                 params = {email: $localStorage.email, token: token}
                 $http.post API_URL + 'sessions',
-                    authToken: $localStorage.authToken
+                    authToken: token
                     email: $localStorage.email
                     password: if !$localStorage.authToken then $localStorage.password else undefined
                     token: token
-                .success (data) ->
-                    useCredentials(data)
-                    resolve()
-                .error ->
-                    $localStorage.authToken = null
-                    reject('Login error')
+                .then (response) ->
+                    debugger
+                    if response.status is 200 and response.data?
+                        useCredentials(response.data)
+                        resolve()
+                    else
+                        $localStorage.authToken = null
+                        reject('Login error')
                     
 
     signup: (email, password, dateOfBirth) ->
@@ -49,4 +55,4 @@ authentication = ($localStorage, $http, $rootScope, $q, $location, API_URL) ->
                 .error(reject)
                     
 
-fuckr.factory('authentication', ['$localStorage', '$http', '$rootScope', '$q', '$location', 'API_URL', authentication])
+fuckr.factory('authentication', ['$localStorage', '$http', '$rootScope', '$q', '$location', '$timeout', 'API_URL', authentication])

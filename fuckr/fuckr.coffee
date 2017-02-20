@@ -6,7 +6,7 @@ fuckr.config ['$httpProvider', '$routeProvider', '$compileProvider', ($httpProvi
     $httpProvider.defaults.headers.common.Accept = '*/*' #avoids 406 error
     $httpProvider.interceptors.push ($rootScope) ->
         responseError: (response) ->
-            return if response.status == -1
+            return if response.status == -1 or response.status == 403
             message = switch
                 when response.status == 0 then "Can't reach Grindr servers."
                 when response.status >= 500 then "Grindr servers temporarily unavailable (HTTP #{response.status})"
