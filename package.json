@@ -1,10 +1,10 @@
 {
   "name": "fuckr",
-  "version": "1.8.1",
+  "version": "2.0.0-alpha",
   "description": "Desktop grindr client for Mac and Windows",
   "main": "package.js",
   "scripts": {
-    "build": "cat fuckr/services/*.coffee fuckr/controllers/*.coffee fuckr/directives.coffee fuckr/fuckr.coffee | coffee -cbs > fuckr/fuckr.js",
+    "build": "cat fuckr/fuckr.coffee fuckr/services/*.coffee fuckr/controllers/*.coffee fuckr/directives.coffee | coffee -cbs > fuckr/fuckr.js",
     "package": "npm run build && node package.js",
     "run": "npm run build && nw fuckr"
   },

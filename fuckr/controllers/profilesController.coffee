@@ -1,53 +1,52 @@
-profilesController = ($scope, $interval, $localStorage, $routeParams, $window, $injector, profiles, pinpoint, managedFields) ->
+profilesController = ($scope, $interval, $localStorage, $routeParams, $window, $injector, profiles, pinpoint) ->
     #left part: filter form and thumbnails
-    $scope.$storage = $localStorage.$default
-        location: 'San Francisco, CA'
-        grindrParams:
+    defaultStorage =
+        location:
+            name: 'San Francisco, CA'
             lat: 37.7833
             lon: -122.4167
-            filter:
-                ageMinimum: null
-                ageMaximum: null
-                photoOnly: true
-                onlineOnly: false
-                page: 1
-                quantity: 500
-    $scope.$storage.grindrParams.filter.quantity = 500 #for upgrades
+            geohash: '9q8yyq4zsjse'
+        filters:
+            photoOnly: true
+        fuckrVersion: 2.0
+    $scope.$storage = $localStorage.$default(defaultStorage)
+    unless $scope.$storage.fuckrVersion
+        $scope.$storage.location = defaultStorage.location
+        $scope.$storage.filters = defaultStorage.filters
+        $scope.$storage.fuckrVersion = defaultStorage.fuckrVersion
 
     $scope.refresh = ->
-        #suppress keys if null or empty
-        filter = $scope.$storage.grindrParams.filter
-        delete filter.ageMinimum unless filter.ageMinimum
-        delete filter.ageMaximum unless filter.ageMaximum
+        filters = $scope.$storage.filters
 
         if $scope.view == 'thumbnails'
-            profiles.nearby($scope.$storage.grindrParams).then (profiles) ->
+            profiles.nearby($scope.$storage.location).then (profiles) ->
                 $scope.nearbyProfiles = profiles
         else if $scope.view == 'map'
             pinpoint.everyoneAround().then (locations) ->
                 $scope.locations = locations
 
     $scope.changeFilter = (filterName) ->
-        filterValue = $scope.$storage.filter[filterName]
+        filterValue = $scope.$storage.filters[filterName]
         if filterValue
-            $scope.$storage.grindrParams.filter["#{filterName}Ids"] = [filterValue]
+            $scope.$storage.filters["#{filterName}Ids"] = [filterValue]
         else
-            delete $scope.$storage.grindrParams.filter["#{filterName}Ids"]
+            delete $scope.$storage.filters["#{filterName}Ids"]
         $scope.refresh()
 
     $scope.$watch 'view', (view) ->
         $scope.locations = []
         $scope.refresh()
     $scope.view = 'thumbnails'
-    $interval($scope.refresh, 300000)
+    $interval($scope.refresh, 420000)
 
     autocomplete = new google.maps.places.Autocomplete(document.getElementById('location'))
     google.maps.event.addListener autocomplete, 'place_changed', ->
         place = autocomplete.getPlace()
-        $scope.$storage.location = place.formatted_address
+        $scope.$storage.location.name = place.formatted_address
         if place.geometry
-            $scope.$storage.grindrParams.lat = place.geometry.location.lat()
-            $scope.$storage.grindrParams.lon = place.geometry.location.lng()
+            $scope.$storage.location.lat = place.geometry.location.lat()
+            $scope.$storage.location.lon = place.geometry.location.lng()
+            #$scope.$storage.location.geohash = Geohash.encode($scope.$storage.location.lat, $scope.$storage.location.lon, 12)
             $scope.refresh()
 
     #right part: detailed profile view
@@ -78,7 +77,7 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, $
             profile.profileId isnt $scope.profile.profileId
         delete $scope.profile
 
-    managedFields.then (response) -> $scope.managedFields = response.data.fields
+    #managedFields.then (response) -> $scope.managedFields = response.data.fields
     #only included in v3 managed-fields
     $scope.sexualPositions = ['', 'Top', 'Bottom', 'Versatile', 'Vers Bottom', 'Vers Top', 'Oral Only']
 
@@ -101,16 +100,14 @@ cmToLocalUnit = ($localStorage) ->
         else
             "#{(cm / 100).toPrecision(3)}m"
 
-kmToLocalUnit = ($localStorage) ->
-    (km) ->
-        if !km
+mToLocalUnit = ($localStorage) ->
+    (m) ->
+        if !m
             ''
         else if $localStorage.localUnits == 'US'
-            (km*0.621371).toPrecision(3) + ' miles'
+            (m*0.000621371).toPrecision(3) + ' miles'
         else
-            km.toPrecision(3) + 'km'
-
-managedFields = ($http) -> $http.get('https://primus.grindr.com/2.0/managedFields')
+            (m/1000).toPrecision(3) + 'km'
 
 lastTimeActive = ->
     (timestamp) ->
@@ -123,12 +120,11 @@ lastTimeActive = ->
         else if hours < 48 then "Active yesterday"
         else "Active #{Math.floor(hours / 24)} days ago"
 
-angular
-    .module('profilesController', ['ngRoute', 'ngStorage', 'ngMap', 'profiles', 'pinpoint'])
+fuckr
     .filter('gramToLocalUnit', ['$localStorage', gramToLocalUnit])
     .filter('cmToLocalUnit', ['$localStorage', cmToLocalUnit])
-    .filter('kmToLocalUnit', ['$localStorage', kmToLocalUnit])
+    .filter('mToLocalUnit', ['$localStorage', mToLocalUnit])
     .filter('lastTimeActive', lastTimeActive)
-    .factory('managedFields', managedFields)
+    #.factory('managedFields', managedFields)
     .controller 'profilesController',
-               ['$scope', '$interval', '$localStorage', '$routeParams', '$window', '$injector', 'profiles', 'pinpoint', 'managedFields', profilesController]
+               ['$scope', '$interval', '$localStorage', '$routeParams', '$window', '$injector', 'profiles', 'pinpoint', profilesController]

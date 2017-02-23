@@ -1,20 +1,20 @@
-settingsController = ($scope, $http, $localStorage, profiles, uploadImage) ->
+settingsController = ($scope, $http, $localStorage, profiles, uploadImage, API_URL) ->
     $scope.$storage = $localStorage
     $scope.$storage.localUnits ||= if navigator.locale == 'en-US' then 'US' else 'metric'
 
     $scope.profile = {}
-    profiles.get($localStorage.profileId).then (profile) ->
+    profiles.get($scope.profileId).then (profile) ->
         $scope.profile = profile
 
     $scope.updateAttribute = (attribute) ->
         data = {}
         data[attribute] = $scope.profile[attribute]
         unless data == {}
-            $http.put('https://primus.grindr.com/2.0/profile', data)
+            $http.put(API_URL + 'me/profile', data)
 
     $scope.deleteProfile = ->
         if confirm("Sure you want to delete your profile")
-            $http.delete('https://primus.grindr.com/2.0/profile').then ->
+            $http.delete(API_URL + 'me/profile').then ->
                 $scope.logoutAndRestart()
 
     $scope.$watch 'imageFile', ->
@@ -32,7 +32,6 @@ weightInput = ->
         ngModel.$formatters.push (gramsInput) -> gramsInput / 1000
         ngModel.$parsers.push (kgInput) -> kgInput * 1000
 
-angular
-    .module('settingsController', ['file-model', 'uploadImage'])
-    .controller('settingsController', ['$scope', '$http', '$localStorage', 'profiles', 'uploadImage', settingsController])
+fuckr
+    .controller('settingsController', ['$scope', '$http', '$localStorage', 'profiles', 'uploadImage', 'API_URL', settingsController])
     .directive('weightInput', weightInput)

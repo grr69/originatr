@@ -1,48 +1,38 @@
 #gets, caches and blocks profiles
-profiles = ($http, $q, $rootScope) ->
-    profileCache = {}
-
+profiles = ($http, $localStorage, $q, $rootScope, API_URL) ->
     blocked = []
     $rootScope.$on 'authenticated', ->
-        if blocked.length == 0
-            $http.get('https://primus.grindr.com/2.0/blocks').then (response) ->
-                blocked = _.union(response.data.blockedBy, response.data.blocking)
+        $http.get(API_URL + 'me/blocks').then (response) ->
+            blocked = _.union(response.blockedBy, response.blocking)
 
     return {
-        nearby: (params) ->
+        nearby: (location) ->
             deferred = $q.defer()
-            $http.post('https://primus.grindr.com/2.0/nearbyProfiles', params).then (response) ->
+            geohash = Geohash.encode(location.lat, location.lon, 12)
+            filterParams = _.map $localStorage.filters, (value, key) ->
+                "#{key}=#{encodeURIComponent(value)}" if value
+            $http.get("#{API_URL}locations/#{geohash}/profiles/?#{_.compact(filterParams).join('&')}").then (response) ->
                 profiles = _.reject response.data.profiles, (profile) ->
                     _.contains(blocked, profile.profileId)
-
-                for profile in profiles when not profileCache[profile.profileId]
-                    profileCache[profile.profileId] = profile
                 deferred.resolve(profiles)
             deferred.promise
 
         get: (id) ->
-            if profileCache[id]
-                $q.when(profileCache[id])
-            else
-                deferred = $q.defer()
-                $http.post('https://primus.grindr.com/2.0/getProfiles', {targetProfileIds: [id]}).then (response) ->
-                    deferred.resolve(response.data[0])
-                deferred.promise
+            deferred = $q.defer()
+            $http.get("#{API_URL}profiles/#{id}").then (response) ->
+                deferred.resolve(response.data.profiles[0])
+            deferred.promise
 
         blockedBy: (id) ->
             blocked.push(id)
-            delete profileCache[id]
 
         block: (id) ->
-            self = this
-            $http.post('https://primus.grindr.com/2.0/blockProfiles', {targetProfileIds: [id]}).then ->
-                self.blockedBy(id)
+            $http.post("#{API_URL}me/blocks/#{id}").then => @blockedBy(id)
 
         isBlocked: (id) -> _.contains(blocked, id)
     }
 
 
-angular
-    .module('profiles', [])
-    .factory('profiles', ['$http', '$q', '$rootScope', profiles])
+
+fuckr.factory('profiles', ['$http', '$localStorage', '$q', '$rootScope', 'API_URL', profiles])
     

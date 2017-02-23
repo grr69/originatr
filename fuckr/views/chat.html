@@ -2,7 +2,7 @@
   <div ng-repeat="conversation in lastestConversations"
        ng-class="['pure-g', 'conversation', conversation.unread ? 'unread' : '']" >
     <a ng-href="#/profiles/{{conversation.id}}">
-      <img non-draggable class="thumbnail" ng-src="http://cdns.grindr.com/images/thumb/187x187/{{conversation.thumbnail}}">
+      <img non-draggable class="thumbnail" ng-src="http://cdns.grindr.com/images/thumb/320x320/{{conversation.thumbnail}}">
     </a>
     <div class="lastMessages" ng-click="open(conversation.id)">
       {{lastMessage = conversation.messages[conversation.messages.length - 1]; ""}}

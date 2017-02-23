@@ -5,10 +5,10 @@
 #   - get messages sent while you were offline (/undeliveredChatMessages)
 #   - confirm receiption (/confirmChatMessagesDelivered)
 #   - notify Grindr you blocked someone (managed by profiles controller)
-chat = ($http, $localStorage, $rootScope, $q, profiles, authenticate) ->
-    jacasr = require('jacasr')
-    nwWindow = gui = require('nw.gui').Window.get()
+jacasr = require('jacasr')
+nwWindow = gui = require('nw.gui').Window.get()
 
+chat = ($http, $localStorage, $rootScope, $q, profiles, authentication, API_URL) ->
     s4 = -> Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
     uuid = -> "#{s4()}#{s4()}-#{s4()}-#{s4()}-#{s4()}-#{s4()}#{s4()}#{s4()}".toUpperCase()
 
@@ -26,12 +26,12 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authenticate) ->
 
 
     addMessage = (message) ->
-        if parseInt(message.sourceProfileId) == $localStorage.profileId
+        if message.sourceProfileId == $rootScope.profileId
             fromMe = true
-            id = parseInt(message.targetProfileId)
+            id = message.targetProfileId
         else
             fromMe = false
-            id = parseInt(message.sourceProfileId)
+            id = message.sourceProfileId
 
         return if profiles.isBlocked(id)
 
@@ -58,21 +58,22 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authenticate) ->
 
 
     acknowledgeMessages = (messageIds) ->
-        $http.post('https://primus.grindr.com/2.0/confirmChatMessagesDelivered', {messageIds: messageIds})
+        $http.put(API_URL + 'me/chat/messages?confirmed=true', {messageIds: messageIds})
     
     lastConnection = null
     $rootScope.$on 'authenticated', (event, token) ->
         lastConnection ||= Date.now()
+        loggingOut = false
         client = new jacasr.Client
-            login: $localStorage.profileId
+            login: $rootScope.profileId
             password: token
             domain: 'chat.grindr.com'
 
         client.on 'ready', ->
             chat.connected = true
-            $http.get('https://primus.grindr.com/2.0/undeliveredChatMessages').then (response) ->
+            $http.get(API_URL + 'me/chat/messages?undelivered=true').then (response) ->
                 messageIds = []
-                _(response.data).sortBy((message) -> message.timestamp).forEach (message) ->
+                _(response.data.messages).sortBy((message) -> message.timestamp).forEach (message) ->
                     addMessage(message)
                     messageIds.push(message.messageId)
                 if messageIds.length > 0
@@ -84,13 +85,18 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authenticate) ->
 
         client.on 'close', ->
             now = Date.now()
+            return if loggingOut
             if (now - lastConnection) < 60000
                 $rootScope.chatError = true
                 alert("XMPP chat error. If you're using public wifi, XMPP protocol is probably blocked.")
             else
                 lastConnection = now
                 client.disconnect()
-                authenticate()
+                authentication.login()
+
+        $rootScope.$on 'logout', ->
+            loggingOut = true
+            client.disconnect()
 
         window.onbeforeunload = ->
           client.disconnect()
@@ -106,9 +112,9 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authenticate) ->
             messageId: uuid()
             timestamp: Date.now()
             sourceDisplayName: ''
-            sourceProfileId: String($localStorage.profileId)
+            sourceProfileId: String($rootScope.profileId)
             body: body
-        client.write """<message from='#{$localStorage.profileId}@chat.grindr.com/jacasr' to='#{to}@chat.grindr.com' xml:lang='' type='chat' id='#{message.messageId}'><body>#{_.escape angular.toJson(message)}</body><markable xmlns='urn:xmpp:chat-markers:0'/></message>"""
+        client.write """<message from='#{$rootScope.profileId}@chat.grindr.com/jacasr' to='#{to}@chat.grindr.com' xml:lang='' type='chat' id='#{message.messageId}'><body>#{_.escape angular.toJson(message)}</body><markable xmlns='urn:xmpp:chat-markers:0'/></message>"""
         #TODO: send read message confirmation
         
         
@@ -130,8 +136,8 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authenticate) ->
 
         sendLocation: (to) ->
             messageBody = angular.toJson
-                lat: $localStorage.grindrParams.lat
-                lon: $localStorage.grindrParams.lon
+                lat: $localStorage.location.lat
+                lon: $localStorage.location.lon
             sendMessage('map', messageBody, to)
 
         block: (id) ->
@@ -141,6 +147,4 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authenticate) ->
     }
 
 
-angular
-    .module('chat', ['ngStorage', 'profiles'])
-    .factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', 'authenticate', chat])
+fuckr.factory('chat', ['$http', '$localStorage', '$rootScope', '$q', 'profiles', 'authentication', 'API_URL', chat])

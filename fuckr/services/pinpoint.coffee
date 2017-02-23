@@ -38,15 +38,12 @@ pinpoint = ($q, $localStorage, profiles) ->
 
 
     randomizedLocation = ->
-        lat: $localStorage.grindrParams.lat + ((Math.random() - 0.5) / 100) #+/- ~500m north
-        lon: $localStorage.grindrParams.lon + ((Math.random() - 0.5) / 100) #+/- ~500m east
+        lat: $localStorage.location.lat + ((Math.random() - 0.5) / 100) #+/- ~500m north
+        lon: $localStorage.location.lon + ((Math.random() - 0.5) / 100) #+/- ~500m east
 
     getNearbyProfiles = (locations) ->
         promises = locations.map (location) ->
-            params = _.clone($localStorage.grindrParams)
-            params.lat = location.lat
-            params.lon = location.lon
-            profiles.nearby(params)
+            profiles.nearby(location)
         $q.all(promises)
         
 
@@ -58,7 +55,7 @@ pinpoint = ($q, $localStorage, profiles) ->
                 for i in [0..2]
                     profile = _.findWhere(results[i], {profileId: id})
                     return deferred.reject() unless profile
-                    beacons[i].dist = profile.distance
+                    beacons[i].dist = profile.distance / 1000
                 deferred.resolve(trilaterate(beacons))
             deferred.promise
 
@@ -70,7 +67,7 @@ pinpoint = ($q, $localStorage, profiles) ->
                 for i in [0..2]
                     for profile in results[i] when profile.distance
                         idToDistances[profile.profileId] ||= []
-                        idToDistances[profile.profileId].push(profile.distance)
+                        idToDistances[profile.profileId].push(profile.distance / 1000)
 
                 idToLocation = {}
                 for id, distances of idToDistances when distances.length == 3
@@ -81,6 +78,4 @@ pinpoint = ($q, $localStorage, profiles) ->
     }
 
 
-angular
-    .module('pinpoint', ['profiles'])
-    .factory('pinpoint', ['$q', '$localStorage', 'profiles', pinpoint])
+fuckr.factory('pinpoint', ['$q', '$localStorage', 'profiles', pinpoint])
