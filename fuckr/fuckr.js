@@ -570,9 +570,9 @@ chatController = function($scope, $routeParams, chat, uploadImage) {
       if ($scope.conversation) {
         $scope.conversation.unread = false;
       }
-      $scope.$apply();
     }
-    return $scope.lastestConversations = chat.lastestConversations();
+    $scope.lastestConversations = chat.lastestConversations();
+    return $scope.$apply();
   });
   $scope.sendText = function() {
     if ($scope.message) {

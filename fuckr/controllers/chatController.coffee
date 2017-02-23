@@ -12,8 +12,8 @@ chatController = ($scope, $routeParams, chat, uploadImage) ->
         if $scope.conversationId
             $scope.conversation = chat.getConversation($scope.conversationId)
             $scope.conversation.unread = false if $scope.conversation
-            $scope.$apply()
         $scope.lastestConversations = chat.lastestConversations()
+        $scope.$apply()
 
     $scope.sendText = ->
         if $scope.message
