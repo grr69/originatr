@@ -25,13 +25,13 @@ fuckr.config ['$httpProvider', '$routeProvider', '$compileProvider', ($httpProvi
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|file|mailto|chrome-extension):/)
 ]
 
-fuckr.run ['$location', '$injector', '$rootScope', 'authentication', ($location, $injector, $rootScope, authentication) ->
+fuckr.run ['$location', '$injector', '$rootScope', '$timeout', 'authentication', ($location, $injector, $rootScope, $timeout, authentication) ->
     $rootScope.runningNodeWebkit = true
     if navigator.onLine
         #ugly: loading every factory with 'authenticated' event listener
         $injector.get(factory) for factory in ['profiles', 'chat']
         authentication.login().then(
-            -> $location.path('/profiles/')
+            -> $timeout (-> $location.path('/profiles/')), 50
             -> $location.path('/login')
         )
         window.addEventListener 'offline', -> $rootScope.connectionError = true

@@ -46,7 +46,7 @@ fuckr.config([
 ]);
 
 fuckr.run([
-  '$location', '$injector', '$rootScope', 'authentication', function($location, $injector, $rootScope, authentication) {
+  '$location', '$injector', '$rootScope', '$timeout', 'authentication', function($location, $injector, $rootScope, $timeout, authentication) {
     var factory, k, len, ref;
     $rootScope.runningNodeWebkit = true;
     if (navigator.onLine) {
@@ -56,7 +56,9 @@ fuckr.run([
         $injector.get(factory);
       }
       authentication.login().then(function() {
-        return $location.path('/profiles/');
+        return $timeout((function() {
+          return $location.path('/profiles/');
+        }), 50);
       }, function() {
         return $location.path('/login');
       });
@@ -113,25 +115,22 @@ authentication = function($localStorage, $http, $rootScope, $q, $location, $time
           return;
         }
         return getGCMToken().then(function(token) {
-          var params;
-          params = {
-            email: $localStorage.email,
-            token: token
-          };
           return $http.post(API_URL + 'sessions', {
-            authToken: token,
+            authToken: $localStorage.authToken || void 0,
             email: $localStorage.email,
             password: !$localStorage.authToken ? $localStorage.password : void 0,
             token: token
           }).then(function(response) {
-            debugger;
-            if (response.data) {
+            if (response && response.status === 200 && response.data) {
               useCredentials(response.data);
               return resolve();
             } else {
               $localStorage.authToken = null;
               return reject('Login error');
             }
+          }, function() {
+            $localStorage.authToken = null;
+            return reject('Login error');
           });
         });
       });
@@ -183,12 +182,12 @@ chat = function($http, $localStorage, $rootScope, $q, profiles, authentication, 
   };
   addMessage = function(message) {
     var fromMe, id, timestamp;
-    if (parseInt(message.sourceProfileId) === $localStorage.profileId) {
+    if (message.sourceProfileId === $rootScope.profileId) {
       fromMe = true;
-      id = parseInt(message.targetProfileId);
+      id = message.targetProfileId;
     } else {
       fromMe = false;
-      id = parseInt(message.sourceProfileId);
+      id = message.sourceProfileId;
     }
     if (profiles.isBlocked(id)) {
       return;
@@ -247,7 +246,7 @@ chat = function($http, $localStorage, $rootScope, $q, profiles, authentication, 
     lastConnection || (lastConnection = Date.now());
     loggingOut = false;
     client = new jacasr.Client({
-      login: $localStorage.profileId,
+      login: $rootScope.profileId,
       password: token,
       domain: 'chat.grindr.com'
     });
@@ -256,7 +255,7 @@ chat = function($http, $localStorage, $rootScope, $q, profiles, authentication, 
       return $http.get(API_URL + 'me/chat/messages?undelivered=true').then(function(response) {
         var messageIds;
         messageIds = [];
-        _(response.data).sortBy(function(message) {
+        _(response.data.messages).sortBy(function(message) {
           return message.timestamp;
         }).forEach(function(message) {
           addMessage(message);
@@ -310,10 +309,10 @@ chat = function($http, $localStorage, $rootScope, $q, profiles, authentication, 
       messageId: uuid(),
       timestamp: Date.now(),
       sourceDisplayName: '',
-      sourceProfileId: String($localStorage.profileId),
+      sourceProfileId: String($rootScope.profileId),
       body: body
     };
-    client.write("<message from='" + $localStorage.profileId + "@chat.grindr.com/jacasr' to='" + to + "@chat.grindr.com' xml:lang='' type='chat' id='" + message.messageId + "'><body>" + (_.escape(angular.toJson(message))) + "</body><markable xmlns='urn:xmpp:chat-markers:0'/></message>");
+    client.write("<message from='" + $rootScope.profileId + "@chat.grindr.com/jacasr' to='" + to + "@chat.grindr.com' xml:lang='' type='chat' id='" + message.messageId + "'><body>" + (_.escape(angular.toJson(message))) + "</body><markable xmlns='urn:xmpp:chat-markers:0'/></message>");
     if (save) {
       return addMessage(message);
     }
@@ -716,6 +715,11 @@ profilesController = function($scope, $interval, $localStorage, $routeParams, $w
     fuckrVersion: 2.0
   };
   $scope.$storage = $localStorage.$default(defaultStorage);
+  if (!$scope.$storage.fuckrVersion) {
+    $scope.$storage.location = defaultStorage.location;
+    $scope.$storage.filters = defaultStorage.filters;
+    $scope.$storage.fuckrVersion = defaultStorage.fuckrVersion;
+  }
   $scope.refresh = function() {
     var filters;
     filters = $scope.$storage.filters;
@@ -859,7 +863,7 @@ settingsController = function($scope, $http, $localStorage, profiles, uploadImag
   $scope.$storage = $localStorage;
   (base = $scope.$storage).localUnits || (base.localUnits = navigator.locale === 'en-US' ? 'US' : 'metric');
   $scope.profile = {};
-  profiles.get($localStorage.profileId).then(function(profile) {
+  profiles.get($scope.profileId).then(function(profile) {
     return $scope.profile = profile;
   });
   $scope.updateAttribute = function(attribute) {

@@ -26,12 +26,12 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authentication, API_URL)
 
 
     addMessage = (message) ->
-        if parseInt(message.sourceProfileId) == $localStorage.profileId
+        if message.sourceProfileId == $rootScope.profileId
             fromMe = true
-            id = parseInt(message.targetProfileId)
+            id = message.targetProfileId
         else
             fromMe = false
-            id = parseInt(message.sourceProfileId)
+            id = message.sourceProfileId
 
         return if profiles.isBlocked(id)
 
@@ -65,7 +65,7 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authentication, API_URL)
         lastConnection ||= Date.now()
         loggingOut = false
         client = new jacasr.Client
-            login: $localStorage.profileId
+            login: $rootScope.profileId
             password: token
             domain: 'chat.grindr.com'
 
@@ -73,7 +73,7 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authentication, API_URL)
             chat.connected = true
             $http.get(API_URL + 'me/chat/messages?undelivered=true').then (response) ->
                 messageIds = []
-                _(response.data).sortBy((message) -> message.timestamp).forEach (message) ->
+                _(response.data.messages).sortBy((message) -> message.timestamp).forEach (message) ->
                     addMessage(message)
                     messageIds.push(message.messageId)
                 if messageIds.length > 0
@@ -112,9 +112,9 @@ chat = ($http, $localStorage, $rootScope, $q, profiles, authentication, API_URL)
             messageId: uuid()
             timestamp: Date.now()
             sourceDisplayName: ''
-            sourceProfileId: String($localStorage.profileId)
+            sourceProfileId: String($rootScope.profileId)
             body: body
-        client.write """<message from='#{$localStorage.profileId}@chat.grindr.com/jacasr' to='#{to}@chat.grindr.com' xml:lang='' type='chat' id='#{message.messageId}'><body>#{_.escape angular.toJson(message)}</body><markable xmlns='urn:xmpp:chat-markers:0'/></message>"""
+        client.write """<message from='#{$rootScope.profileId}@chat.grindr.com/jacasr' to='#{to}@chat.grindr.com' xml:lang='' type='chat' id='#{message.messageId}'><body>#{_.escape angular.toJson(message)}</body><markable xmlns='urn:xmpp:chat-markers:0'/></message>"""
         #TODO: send read message confirmation
         
         

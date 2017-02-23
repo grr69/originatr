@@ -3,7 +3,7 @@ settingsController = ($scope, $http, $localStorage, profiles, uploadImage, API_U
     $scope.$storage.localUnits ||= if navigator.locale == 'en-US' then 'US' else 'metric'
 
     $scope.profile = {}
-    profiles.get($localStorage.profileId).then (profile) ->
+    profiles.get($scope.profileId).then (profile) ->
         $scope.profile = profile
 
     $scope.updateAttribute = (attribute) ->

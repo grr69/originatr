@@ -26,20 +26,21 @@ authentication = ($localStorage, $http, $rootScope, $q, $location, $timeout, API
                 reject('no login credentials')
                 return
             getGCMToken().then (token) ->
-                params = {email: $localStorage.email, token: token}
                 $http.post API_URL + 'sessions',
-                    authToken: token
+                    authToken: $localStorage.authToken or undefined
                     email: $localStorage.email
                     password: if !$localStorage.authToken then $localStorage.password else undefined
                     token: token
                 .then (response) ->
-                    debugger
-                    if response.status is 200 and response.data?
+                    if response and response.status is 200 and response.data
                         useCredentials(response.data)
                         resolve()
                     else
                         $localStorage.authToken = null
                         reject('Login error')
+                , ->
+                    $localStorage.authToken = null
+                    reject('Login error')
                     
 
     signup: (email, password, dateOfBirth) ->
