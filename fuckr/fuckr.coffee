@@ -8,8 +8,8 @@ fuckr.config ['$httpProvider', '$routeProvider', '$compileProvider', ($httpProvi
         responseError: (response) ->
             return if response.status == -1 or response.status == 403
             message = switch
-                when response.status == 0 then "Can't reach Grindr servers."
-                when response.status >= 500 then "Grindr servers temporarily unavailable (HTTP #{response.status})"
+                when response.status == 0 then "Can't reach Grindr™ servers."
+                when response.status >= 500 then "Grindr™ servers temporarily unavailable (HTTP #{response.status})"
                 else "Unexpected error (HTTP #{response.status}). Check out http://fuckr.me/ for updates."
             alert(message)
             $rootScope.connectionError = true

@@ -1,10 +1,10 @@
-#Grindr chat messages are JSON objects sent and received with XMPP:
+#Grindr™ chat messages are JSON objects sent and received with XMPP:
 #   addresses: "{profileId}@chat.grindr.com"
 #   password: one-time token (see authentication)
-#Grindr chat uses HTTP to:
+#Grindr™ chat uses HTTP to:
 #   - get messages sent while you were offline (/undeliveredChatMessages)
 #   - confirm receiption (/confirmChatMessagesDelivered)
-#   - notify Grindr you blocked someone (managed by profiles controller)
+#   - notify Grindr™ you blocked someone (managed by profiles controller)
 jacasr = require('jacasr')
 nwWindow = gui = require('nw.gui').Window.get()
 

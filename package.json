@@ -1,7 +1,7 @@
 {
   "name": "fuckr",
   "version": "2.0.0-alpha",
-  "description": "Desktop grindr client for Mac and Windows",
+  "description": "Unofficial alternative desktop Grindr™ client for Mac and Windows",
   "main": "package.js",
   "scripts": {
     "build": "cat fuckr/fuckr.coffee fuckr/services/*.coffee fuckr/controllers/*.coffee fuckr/directives.coffee | coffee -cbs > fuckr/fuckr.js",

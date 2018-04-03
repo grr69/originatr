@@ -1,6 +1,8 @@
-#Unofficial Grindr API v3 documentation
+#Unofficial Grindr™ API v3 documentation
 
-Grindr's service is comprised of:
+This is a unofficial documentation of Grindr™'s API based on reverse-engineering, in no way is it undorsed by Grindr LLC.
+
+Grindr™'s service is comprised of:
   1. A REST API endpoint, at https://grindr.mobi
   2. A regular HTTP CDN, at http://cdns.grindr.com
   3. An XMPP server at chat.grindr.com:5222
@@ -9,7 +11,7 @@ All API calls to the REST endpoint must be sent with the HTTP user-agent set to 
 The REST endpoint will fail requests with HTTP/412 if it doesn't like the user-agent.
 
 ##Updating dynamic configuration
-Some configuration is pulled from the server, presumably so Grindr can change it at any time.
+Some configuration is pulled from the server, presumably so Grindr™ can change it at any time.
 In pratice, these don't seem to change often, so you can consider caching them.
 
 ###Service endpoints
@@ -108,7 +110,7 @@ It was added back in either 3.0.2 or 3.0.3.
 ###Managed fields
 Certain enums and flags are downloaded from the server.
 For example, the list of Ethnicities shown on a user's profile is a managed field.
-Grindr can add a new Ethnicity at any time without a client update.
+Grindr™ can add a new Ethnicity at any time without a client update.
 
 Issue an unauthenticated GET request to `https://grindr.mobi/v3/managed-fields` to get a list of fields.
 Example response (partly redacted to conserve space):
@@ -125,7 +127,7 @@ Example response (partly redacted to conserve space):
     }
 
 Most fields are self-explanatory elements on the profile.
-The exception is `reportReasons`, which is used to report a policy violation to Grindr's moderators.
+The exception is `reportReasons`, which is used to report a policy violation to Grindr™'s moderators.
 
 ##Authentication
 Terminology (not official, just used in this document):
@@ -142,7 +144,7 @@ Ask the user for the following information:
 - Email address
 - Password
 - Birthday (for age verification, and presumably also better ad targeting)
-- Whether the user would like to receive emails from Grindr's marketing department
+- Whether the user would like to receive emails from Grindr™'s marketing department
 
 Issue a POST request to `https://grindr.mobi/v3/users` with this payload:
 
@@ -164,14 +166,14 @@ Normally, an Android or iOS app can simply call InstanceID.getToken.
 However, if your platform doesn't have a Google SDK, you're in trouble.
 
 If there's an error creating the account, the server will return an HTTP 4xx error code.
-For example, if the email account is already signed up for Grindr, the server returns HTTP/409 with this payload:
+For example, if the email account is already signed up for Grindr™, the server returns HTTP/409 with this payload:
 
     {
         "code": 22,
         "message": "Email id already exists"
     }
 
-(Unfortunately, this means you can easily out someone as a Grindr user, simply by knowing his email address.
+(Unfortunately, this means you can easily out someone as a Grindr™ user, simply by knowing his email address.
 This seems like a severe privacy problem.)
 
 If account creation is successful, the server returns HTTP/201 (note not the usual 200) with this response:
@@ -225,9 +227,9 @@ If successful, the server returns this HTTP/200 response:
 By now you should have a Session Id (either from creating a new account, signing in with an email, or creating a session from an Authentication Token).
 To issue an authenticated HTTP request, add the HTTP header
 
-    Authorization: Grindr3 <Session Id>
+    Authorization: Grindr™3 <Session Id>
 
-That is, take the literal string "Grindr3 " and append the Session Id.
+That is, take the literal string "Grindr™3 " and append the Session Id.
 That's your `Authorization` header.
 
 ##Account management
@@ -527,7 +529,7 @@ Issue an authenticated POST to `https://grindr.mobi/v3/flags/<Profile Id>` with 
 The `reason` is an integer that specifies which category of abuse you're reporting, taken from the managed fields.
 The `comment` field appears to just re-state the description from the same managed field.
 (In v2, the GUI allowed the user to type out an explanation of the problem, and that would be submitted as the `comment` in the equivalent v2 API.
-One can only imagine the quality of those comments led Grindr to remove the GUI for typing a custom explanation, but the API still retains a vestigial comment field.)
+One can only imagine the quality of those comments led Grindr™ to remove the GUI for typing a custom explanation, but the API still retains a vestigial comment field.)
 
 If successful, server responds HTTP/200 with an empty JSON object.
 
@@ -546,8 +548,8 @@ If successful, the server responds with HTTP/200 and an empty JSON object.
 Note that you'll still want to ack the messages to the XMPP server as well, using XEP-0333 and/or XEP-0198.
 
 ##Photos
-Grindr doesn't use photos directly.
-Instead, Grindr uses a hash of the photo.
+Grindr™ doesn't use photos directly.
+Instead, Grindr™ uses a hash of the photo.
 When you'd like to use a photo (either to modify your profile pic, or to send in chat), you first need to convert your photo into a hash.
 
 ###Uploading a photo
@@ -564,7 +566,7 @@ If the upload is successful, the server responds with HTTP/200 and this response
 The hash can now be used on the CDN, for example: `http://cdns.grindr.com/grindr/chat/<Image hash>`
 
 ###Saving the photo to the user's favorite chat photos
-Grindr maintains a server-side list of favorite chat photos.
+Grindr™ maintains a server-side list of favorite chat photos.
 To add a photo to the list, issue an authenticated POST to `https://grindr.mobi/v3/me/prefs/chat-pix/<Image hash>`.
 
 If successful, the server responds with HTTP/200 and this rather redundant response:
@@ -574,7 +576,7 @@ If successful, the server responds with HTTP/200 and this rather redundant respo
     }
 
 ###Removing a photo from the user's favorite chat photos
-Grindr maintains a server-side list of favorite chat photos.
+Grindr™ maintains a server-side list of favorite chat photos.
 To remove a photo from the list, issue an authenticated DELETE to `https://grindr.mobi/v3/me/prefs/chat-pix/<Image hash>`.
 If successful, the server responds with HTTP/200 and an empty JSON object.
 
@@ -605,7 +607,7 @@ If successful, the server responds with HTTP/200 and this JSON payload:
         "mediaHash": "<Image hash>"
     }
 
-You will need to poll for system messages to find out whether the profile was approved by Grindr's moderators -- see **System messages** above.
+You will need to poll for system messages to find out whether the profile was approved by Grindr™'s moderators -- see **System messages** above.
 
 ##Chat
 
@@ -615,7 +617,7 @@ _TODO: Document the XMPP side of things._
 The official app communicates with a large number of advertising and analytics servers.
 
 ###Broadcast messages
-In addition to general-purpose ad networks, Grindr also runs its own ad delivery system through its REST endpoint.
+In addition to general-purpose ad networks, Grindr™ also runs its own ad delivery system through its REST endpoint.
 Should you feel the need to look at their ads, send a GET to `https://grindr.mobi/v3/broadcastMessages`.
 Although the API doesn't *require* authentication, ads are targeted to the individual, so you probably won't get any ads unless you authenticate.
 
