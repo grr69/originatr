@@ -1,4 +1,4 @@
-# Unofficial desktop client
+# Original desktop client
 
 Unofficial client for desktop built with Node-Webkit, AngularJS and a modified version of [jacasr](https://github.com/tdebarochez/jacasr) (bundled in `fuckr/node_modules`).
 
