@@ -13,8 +13,8 @@ Install node-webkit >= 0.12 (eg. `npm install -g nw`) and run `nw fuckr`
     npm run package
 
 ##API
-All interactions with API are in [fuckr/services](fuckr/services) and summarized in this [unofficial Grindr™ API documentation](unofficial-grindr-api-documentation.md).
-If there's anything else you want to know, you can easily analyse the HTTPS part with [mitmproxy](http://mitmproxy.org/)'s [regular proxy](https://mitmproxy.org/doc/modes.html) mode and the XMPP part with just Wireshark (+ Ettercap) since the official Grindr™ client doesn't bother encrypting that part!
+All interactions with API are in [fuckr/services](fuckr/services) and summarized in this [unofficial API documentation](unofficial-grindr-api-documentation.md).
+If there's anything else you want to know, you can easily analyse the HTTPS part with [mitmproxy](http://mitmproxy.org/)'s [regular proxy](https://mitmproxy.org/doc/modes.html) mode and the XMPP part with just Wireshark (+ Ettercap)
 
 ##Credits
 - Logo: [Reyson Morales](http://reyson-morales.deviantart.com/)
