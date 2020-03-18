@@ -15,7 +15,7 @@
         Online
         <input type="checkbox" ng-model="$storage.filters.onlineOnly" ng-change="refresh()">
         Photo only
-        <input type="checkbox" ng-model="$storage.filters.photoOnly" ng-change="refresh()">
+        <input type="checkbox" ng-model="$storage.filters.faceOnly" ng-change="refresh()">
         View as
         <select ng-model='view' ng-change=refresh()>
           <option value="thumbnails">Thumbnails</option>
@@ -44,7 +44,7 @@
     <a ng-if="view == 'thumbnails'" ng-repeat="profile in nearbyProfiles" style="position:relative;" class="pure-u-1-5" ng-click="open(profile.profileId)">
       <img class="pure-img thumbnail" non-draggable
            ng-src="http://cdns.grindr.com/images/thumb/320x320/{{profile.profileImageMediaHash}}"/>
-		  <div class="caption textoverlay">{{profile.displayName}}</div>				
+		  <div class="caption textoverlay">{{profile.displayName}}</div>
     </a>
 
     <!-- Map -->

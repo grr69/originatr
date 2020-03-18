@@ -7,7 +7,7 @@ profilesController = ($scope, $interval, $localStorage, $routeParams, $window, $
             lon: -122.4167
             geohash: '9q8yyq4zsjse'
         filters:
-            photoOnly: true
+            faceOnly: true
         fuckrVersion: 2.0
     $scope.$storage = $localStorage.$default(defaultStorage)
     unless $scope.$storage.fuckrVersion

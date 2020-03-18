@@ -1,6 +1,8 @@
 window.fuckr = angular.module('fuckr', ['ngRoute', 'ngMap', 'ngStorage'])
 
 fuckr.constant('API_URL', 'https://grindr.mobi/v3/')
+fuckr.constant('API_URL_31', 'https://grindr.mobi/v3.1/')
+fuckr.constant('API_URL_4', 'https://grindr.mobi/v4/')
 
 fuckr.config ['$httpProvider', '$routeProvider', '$compileProvider', ($httpProvider, $routeProvider, $compileProvider) ->
     $httpProvider.defaults.headers.common.Accept = '*/*' #avoids 406 error
@@ -13,7 +15,7 @@ fuckr.config ['$httpProvider', '$routeProvider', '$compileProvider', ($httpProvi
                 else "Unexpected error (HTTP #{response.status}). Check out http://fuckr.me/ for updates."
             alert(message)
             $rootScope.connectionError = true
-            
+
     for route in ['/login', '/profiles/:id?', '/chat/:id?', '/settings']
         name = route.split('/')[1]
         $routeProvider.when route,
